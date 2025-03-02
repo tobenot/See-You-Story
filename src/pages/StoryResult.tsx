@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Spin, message } from 'antd';
 import { BookOutlined, ShareAltOutlined, HeartOutlined, HeartFilled, RightCircleOutlined, BarChartOutlined } from '@ant-design/icons';
@@ -21,6 +21,84 @@ const StoryResult: React.FC<StoryResultProps> = () => {
   const [story, setStory] = useState<string>('');
   const [storyId, setStoryId] = useState<string>('');
   const [liked, setLiked] = useState(false);
+  const requestInProgress = useRef(false); // 添加请求锁引用
+  const [storyGenerated, setStoryGenerated] = useState(false); // 标记故事是否已生成
+  const [fetchError, setFetchError] = useState(false); // 添加请求错误状态
+
+  // 使用静态变量来确保即使多个组件实例也共享一个锁
+  if (typeof window !== 'undefined' && !window.hasOwnProperty('storyRequestLock')) {
+    Object.defineProperty(window, 'storyRequestLock', {
+      value: false,
+      writable: true
+    });
+  }
+
+  const resetRequestLock = () => {
+    if (typeof window !== 'undefined') {
+      console.log('重置请求锁');
+      (window as any).storyRequestLock = false;
+    }
+    requestInProgress.current = false;
+  };
+
+  const acquireRequestLock = (): boolean => {
+    if (typeof window !== 'undefined') {
+      const currentLockState = (window as any).storyRequestLock;
+      console.log('当前锁状态:', currentLockState);
+      
+      if (!currentLockState) {
+        console.log('成功获取请求锁');
+        (window as any).storyRequestLock = true;
+        requestInProgress.current = true;
+        return true;
+      } else {
+        console.log('获取请求锁失败，已有请求在进行中');
+        return false;
+      }
+    }
+    return false;
+  };
+
+  // 组件初始化时尝试从localStorage恢复数据并重置锁
+  useEffect(() => {
+    // 组件初始化时重置锁状态，防止上次异常退出导致锁没有释放
+    resetRequestLock();
+    console.log('组件初始化，重置请求锁状态');
+    
+    const savedStoryData = localStorage.getItem('generatedStoryData');
+    if (savedStoryData) {
+      try {
+        const { content, id, generated, savedAnswers, timestamp } = JSON.parse(savedStoryData);
+        
+        // 检查当前问题和答案是否与保存的相同
+        const currentAnswersJson = JSON.stringify(questionsWithAnswers);
+        const savedAnswersJson = JSON.stringify(savedAnswers);
+        
+        // 检查缓存是否过期（24小时）
+        const currentTime = new Date().getTime();
+        const cacheAge = currentTime - (timestamp || 0);
+        const cacheExpired = cacheAge > 24 * 60 * 60 * 1000; // 24小时过期
+        
+        // 只有当问题和答案完全相同，且缓存未过期时，才使用缓存的故事
+        if (content && id && generated && savedAnswersJson === currentAnswersJson && !cacheExpired) {
+          setStory(content);
+          setStoryId(id);
+          setStoryGenerated(true);
+          setLoading(false);
+          console.log('从本地存储恢复故事数据');
+        } else {
+          if (cacheExpired) {
+            console.log('缓存已过期，需要重新生成故事');
+          } else {
+            console.log('问题或答案已变更，需要重新生成故事');
+          }
+          // 不设置storyGenerated，这样会触发后续的useEffect重新生成故事
+        }
+      } catch (error) {
+        console.error('解析本地存储的故事数据失败:', error);
+      }
+    }
+  }, [questionsWithAnswers]);
 
   useEffect(() => {
     // 检查是否有答案数据
@@ -30,43 +108,67 @@ const StoryResult: React.FC<StoryResultProps> = () => {
       return;
     }
 
+    // 如果故事已生成，则不再重复请求
+    if (storyGenerated && story && storyId) {
+      return;
+    }
+
     // 从API获取故事内容
     const fetchStory = async () => {
+      // 尝试获取全局锁
+      if (!acquireRequestLock()) {
+        console.log('请求已在进行中，跳过重复请求');
+        return;
+      }
+      
       try {
         setLoading(true);
+        setFetchError(false); // 重置错误状态
+        
         // 实际调用API生成故事
         const response = await storyApi.generateStory(questionsWithAnswers);
-        setStory(response.data.content);
-        setStoryId(response.data.id);
+        const storyContent = response.data.content;
+        const newStoryId = response.data.id;
+        
+        // 保存到状态
+        setStory(storyContent);
+        setStoryId(newStoryId);
+        setStoryGenerated(true); // 标记故事已生成
+        
+        // 保存到本地存储
+        localStorage.setItem('generatedStoryData', JSON.stringify({
+          content: storyContent,
+          id: newStoryId,
+          generated: true,
+          timestamp: new Date().getTime(),
+          savedAnswers: questionsWithAnswers
+        }));
+        
         setLoading(false);
       } catch (error) {
         console.error('获取故事失败:', error);
+        setFetchError(true); // 设置错误状态
         
-        // 如果API调用失败，使用本地模拟数据（仅用于演示）
-        // 提取第一个问题的答案作为故事类型参考
-        const storyTitleRef = questionsWithAnswers[0]?.answer || '未知';
-        
-        // 生成一个假的故事内容
-        const mockStory = `
-# 基于你的回答生成的故事
-
-这是一个基于你回答的五个问题而生成的故事。你的回答反映了你的想象力和个性。
-
-**你的回答：**
-${questionsWithAnswers.map(qa => `- **${qa.questionText}**: ${qa.answer}`).join('\n')}
-
-*这个故事将基于你的回答生成。实际上，这只是一个前端演示，真实的故事内容将由后端API生成。*
-        `;
-        
-        setStory(mockStory);
-        setStoryId('mock-id-123');
+        // 显示暂时性的提示，但不使用模拟数据，让用户可以重试
         setLoading(false);
-        message.warning('使用本地模拟数据，API连接失败');
+        message.error('故事生成失败，请检查网络连接后重试');
+      } finally {
+        // 请求结束后释放请求锁
+        resetRequestLock();
       }
     };
 
-    fetchStory();
-  }, [questionsWithAnswers, navigate]);
+    // 只有在需要时调用fetchStory
+    // 如果有错误状态，不自动重试，等待用户手动重试
+    if (!fetchError) {
+      fetchStory();
+    }
+    
+    // 组件卸载时清除请求锁
+    return () => {
+      resetRequestLock();
+    };
+  }, [questionsWithAnswers, navigate, storyGenerated, story, storyId]);
 
   const handleLike = async () => {
     try {
@@ -109,6 +211,8 @@ ${questionsWithAnswers.map(qa => `- **${qa.questionText}**: ${qa.answer}`).join(
   };
 
   const handleNewStory = () => {
+    // 清除本地存储的故事数据
+    localStorage.removeItem('generatedStoryData');
     navigate('/');
   };
 
@@ -122,11 +226,37 @@ ${questionsWithAnswers.map(qa => `- **${qa.questionText}**: ${qa.answer}`).join(
     });
   };
 
+  const handleRetry = () => {
+    // 重置请求状态
+    setFetchError(false);
+    setStoryGenerated(false);
+    // 下一个渲染周期会自动触发fetchStory
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <Spin size="large" />
         <p className="mt-4 text-gray-600">正在创作您的专属故事...</p>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 text-xl mb-4">故事生成失败</p>
+          <p className="text-gray-600 mb-8">无法连接到服务器，请检查您的网络连接</p>
+          <div className="space-x-4">
+            <Button type="primary" onClick={handleRetry}>
+              重试
+            </Button>
+            <Button onClick={handleNewStory}>
+              重新回答问题
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }

@@ -8,7 +8,7 @@ const baseURL = process.env.NODE_ENV === 'development'
 // 创建axios实例
 const instance = axios.create({
   baseURL,
-  timeout: 10000,
+  timeout: 300000,
   headers: {
     'Content-Type': 'application/json',
   },

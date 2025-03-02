@@ -24,16 +24,35 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [customAnswer, setCustomAnswer] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [useCustomAnswer, setUseCustomAnswer] = useState(false);
 
   const handleOptionSelect = (value: string) => {
     setSelectedOption(value);
+    setUseCustomAnswer(false);
+  };
+
+  const handleCustomAnswerFocus = () => {
+    // 当用户开始输入自定义回答时，取消选项选择
+    if (customAnswer.trim() !== '') {
+      setSelectedOption(null);
+      setUseCustomAnswer(true);
+    }
+  };
+
+  const handleCustomAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCustomAnswer(e.target.value);
+    if (e.target.value.trim() !== '') {
+      setUseCustomAnswer(true);
+    } else {
+      setUseCustomAnswer(false);
+    }
   };
 
   const handleSubmit = () => {
-    if (selectedOption) {
-      onSubmit(selectedOption);
-    } else if (customAnswer.trim()) {
+    if (useCustomAnswer && customAnswer.trim()) {
       onSubmit(customAnswer.trim());
+    } else if (selectedOption) {
+      onSubmit(selectedOption);
     }
   };
 
@@ -41,6 +60,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
     setIsRefreshing(true);
     setSelectedOption(null);
     setCustomAnswer('');
+    setUseCustomAnswer(false);
     
     if (onReset) onReset();
     
@@ -72,31 +92,37 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       <h2 className="text-xl font-medium mb-8">{question}</h2>
 
       <div className="space-y-4 mb-8">
-        {options.map((option) => (
-          <div
-            key={option.value}
-            className={`p-4 border rounded-lg cursor-pointer transition-all ${
-              selectedOption === option.value
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-blue-300'
-            }`}
-            onClick={() => handleOptionSelect(option.value)}
-          >
-            <div className="flex items-center">
-              {option.icon && <span className="mr-2">{option.icon}</span>}
-              <span>{option.label}</span>
-            </div>
+        {options.length > 0 && (
+          <div className="space-y-4 mb-4">
+            {options.map((option) => (
+              <div
+                key={option.value}
+                className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                  selectedOption === option.value && !useCustomAnswer
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-blue-300'
+                }`}
+                onClick={() => handleOptionSelect(option.value)}
+              >
+                <div className="flex items-center">
+                  {option.icon && <span className="mr-2">{option.icon}</span>}
+                  <span>{option.label}</span>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-
-        {options.length === 0 && (
-          <textarea
-            className="w-full border border-gray-200 rounded-lg p-4 h-32 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-            placeholder="或者，你可以自由描述..."
-            value={customAnswer}
-            onChange={(e) => setCustomAnswer(e.target.value)}
-          />
         )}
+
+        <div className={`mt-6 ${useCustomAnswer ? 'border-blue-500 bg-blue-50 rounded-lg p-2' : ''}`}>
+          <div className="text-gray-500 mb-2 italic">或者，自由输入你的回答...</div>
+          <textarea
+            className={`w-full border ${useCustomAnswer ? 'border-blue-500' : 'border-gray-200'} rounded-lg p-4 h-32 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none`}
+            placeholder="在此输入你的个性化回答..."
+            value={customAnswer}
+            onChange={handleCustomAnswerChange}
+            onFocus={handleCustomAnswerFocus}
+          />
+        </div>
       </div>
 
       <div className="flex justify-between">
@@ -113,7 +139,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           type="primary"
           size="large"
           className="px-6"
-          disabled={!selectedOption && !customAnswer.trim()}
+          disabled={(!selectedOption && !customAnswer.trim()) || (!useCustomAnswer && !selectedOption)}
           onClick={handleSubmit}
         >
           下一题

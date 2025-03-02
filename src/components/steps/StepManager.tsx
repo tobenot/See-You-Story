@@ -1,68 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QuestionForm from './QuestionForm';
-
-// 问题类型定义
-interface Question {
-  id: string;
-  text: string;
-  options?: { icon?: string; label: string; value: string }[];
-  type: 'options' | 'text';
-}
+import { Question, getRandomQuestions } from '../../config/questions';
 
 // 答案类型定义
 interface Answers {
   [key: string]: string;
 }
 
-// 问题集合 - 这些问题是灵活的，可以是意象性的问题
-const questions: Question[] = [
-  {
-    id: 'question-1',
-    text: '当你凝视星空时，内心浮现的第一个画面是什么？',
-    options: [
-      { icon: '✨', label: '广阔无垠的宇宙', value: '广阔无垠的宇宙' },
-      { icon: '🌌', label: '神秘未知的探索', value: '神秘未知的探索' },
-      { icon: '🏠', label: '遥远的家乡', value: '遥远的家乡' },
-      { icon: '👁️', label: '宇宙的眼睛在凝视我', value: '宇宙的眼睛在凝视我' },
-    ],
-    type: 'options',
-  },
-  {
-    id: 'question-2',
-    text: '如果你可以化身为一种元素，你会选择什么？',
-    options: [
-      { icon: '🔥', label: '火焰', value: '火焰' },
-      { icon: '💧', label: '水', value: '水' },
-      { icon: '🌪️', label: '风', value: '风' },
-      { icon: '🏔️', label: '土', value: '土' },
-      { icon: '⚡', label: '雷电', value: '雷电' },
-    ],
-    type: 'options',
-  },
-  {
-    id: 'question-3',
-    text: '在你的梦境中，最常出现的场景是什么？',
-    type: 'text',
-  },
-  {
-    id: 'question-4',
-    text: '如果世界上所有的颜色只剩下三种，你希望保留哪三种？',
-    type: 'text',
-  },
-  {
-    id: 'question-5',
-    text: '当你面对未知的挑战时，你内心的声音会告诉你什么？',
-    type: 'text',
-  },
-];
+// 默认抽取的问题数量
+const DEFAULT_QUESTION_COUNT = 5;
 
 const StepManager: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
+  const [questions, setQuestions] = useState<Question[]>([]);
+  
+  // 组件挂载时随机抽取问题
+  useEffect(() => {
+    // 从配置中随机抽取问题
+    const randomQuestions = getRandomQuestions(DEFAULT_QUESTION_COUNT);
+    setQuestions(randomQuestions);
+  }, []);
   
   const handleAnswer = (answer: string) => {
+    // 确保问题已加载
+    if (questions.length === 0) return;
+    
     const currentQuestion = questions[currentStep];
     
     // 保存当前问题的答案
@@ -88,8 +53,25 @@ const StepManager: React.FC = () => {
   };
 
   const handleReset = () => {
-    // 仅重置当前问题的答案
+    // 重新随机抽取问题
+    const randomQuestions = getRandomQuestions(DEFAULT_QUESTION_COUNT);
+    setQuestions(randomQuestions);
+    setCurrentStep(0);
+    setAnswers({});
+  };
+  
+  const handleResetCurrentQuestion = () => {
+    // 仅重置当前问题的答案和重新抽取当前问题
+    if (questions.length === 0) return;
+    
     const currentQuestion = questions[currentStep];
+    
+    // 重新随机抽取一个问题替换当前问题
+    const newQuestion = getRandomQuestions(1)[0];
+    const newQuestions = [...questions];
+    newQuestions[currentStep] = newQuestion;
+    
+    setQuestions(newQuestions);
     setAnswers(prev => {
       const newAnswers = { ...prev };
       delete newAnswers[currentQuestion.id];
@@ -102,6 +84,11 @@ const StepManager: React.FC = () => {
       setCurrentStep(prev => prev - 1);
     }
   };
+
+  // 如果问题尚未加载，显示加载状态
+  if (questions.length === 0) {
+    return <div className="max-w-2xl mx-auto py-8 text-center">正在加载问题...</div>;
+  }
 
   const currentQuestion = questions[currentStep];
 
@@ -130,9 +117,18 @@ const StepManager: React.FC = () => {
         question={currentQuestion.text}
         options={currentQuestion.options}
         onSubmit={handleAnswer}
-        onReset={handleReset}
+        onReset={handleResetCurrentQuestion}
         onPrevious={handlePrevious}
       />
+      
+      <div className="mt-6 text-center">
+        <button 
+          onClick={handleReset} 
+          className="text-blue-500 hover:text-blue-700 underline"
+        >
+          重新开始并随机抽取新问题
+        </button>
+      </div>
     </div>
   );
 };
