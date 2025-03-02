@@ -87,11 +87,15 @@ const StoryResult: React.FC = () => {
           setLoading(false);
         } else {
           if (cacheExpired) {
+            console.log('缓存已过期，需要重新生成故事');
           } else {
+            console.log('问题答案已更改，需要重新生成故事');
           }
           // 不设置storyGenerated，这样会触发后续的useEffect重新生成故事
         }
       } catch (error) {
+        console.error('解析缓存的故事数据时出错:', error);
+        localStorage.removeItem('generatedStoryData'); // 清除可能损坏的缓存数据
       }
     }
   }, [questionsWithAnswers]);
