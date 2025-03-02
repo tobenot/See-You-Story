@@ -11,6 +11,13 @@ interface QuestionWithAnswer {
   answer: string;
 }
 
+// 添加全局 Window 接口扩展
+declare global {
+  interface Window {
+    storyRequestLock: boolean;
+  }
+}
+
 const StoryResult: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,9 +27,9 @@ const StoryResult: React.FC = () => {
   const [story, setStory] = useState<string>('');
   const [storyId, setStoryId] = useState<string>('');
   const [liked, setLiked] = useState(false);
-  const requestInProgress = useRef(false); // 添加请求锁引用
-  const [storyGenerated, setStoryGenerated] = useState(false); // 标记故事是否已生成
-  const [fetchError, setFetchError] = useState(false); // 添加请求错误状态
+  const requestInProgress = useRef(false);
+  const [storyGenerated, setStoryGenerated] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
 
   // 使用静态变量来确保即使多个组件实例也共享一个锁
   if (typeof window !== 'undefined' && !('storyRequestLock' in window)) {
@@ -34,26 +41,21 @@ const StoryResult: React.FC = () => {
 
   const resetRequestLock = () => {
     if (typeof window !== 'undefined') {
-      console.log('重置请求锁');
-      (window as any).storyRequestLock = false;
+      window.storyRequestLock = false;
     }
     requestInProgress.current = false;
   };
 
   const acquireRequestLock = (): boolean => {
     if (typeof window !== 'undefined') {
-      const currentLockState = (window as any).storyRequestLock;
-      console.log('当前锁状态:', currentLockState);
+      const currentLockState = window.storyRequestLock;
       
       if (!currentLockState) {
-        console.log('成功获取请求锁');
-        (window as any).storyRequestLock = true;
+        window.storyRequestLock = true;
         requestInProgress.current = true;
         return true;
-      } else {
-        console.log('获取请求锁失败，已有请求在进行中');
-        return false;
       }
+      return false;
     }
     return false;
   };
@@ -62,7 +64,6 @@ const StoryResult: React.FC = () => {
   useEffect(() => {
     // 组件初始化时重置锁状态，防止上次异常退出导致锁没有释放
     resetRequestLock();
-    console.log('组件初始化，重置请求锁状态');
     
     const savedStoryData = localStorage.getItem('generatedStoryData');
     if (savedStoryData) {
@@ -84,17 +85,13 @@ const StoryResult: React.FC = () => {
           setStoryId(id);
           setStoryGenerated(true);
           setLoading(false);
-          console.log('从本地存储恢复故事数据');
         } else {
           if (cacheExpired) {
-            console.log('缓存已过期，需要重新生成故事');
           } else {
-            console.log('问题或答案已变更，需要重新生成故事');
           }
           // 不设置storyGenerated，这样会触发后续的useEffect重新生成故事
         }
       } catch (error) {
-        console.error('解析本地存储的故事数据失败:', error);
       }
     }
   }, [questionsWithAnswers]);
@@ -116,7 +113,6 @@ const StoryResult: React.FC = () => {
     const fetchStory = async () => {
       // 尝试获取全局锁
       if (!acquireRequestLock()) {
-        console.log('请求已在进行中，跳过重复请求');
         return;
       }
       

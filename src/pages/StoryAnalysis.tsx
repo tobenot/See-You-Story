@@ -91,7 +91,7 @@ const StoryAnalysis: React.FC = () => {
     message.info('反馈功能即将上线');
   };
 
-  const handleShare = (cardId: string) => {
+  const handleShare = (_cardId: string) => {
     message.success('分享链接已复制到剪贴板');
   };
 

@@ -85,11 +85,16 @@ const Membership: React.FC = () => {
       const membershipResponse = await membershipApi.getMembershipInfo();
       setMembershipInfo(membershipResponse.data);
       setRedeemCode(''); // 清空兑换码输入框
-    } catch (error: any) {
+    } catch (error) {
       console.error('兑换失败:', error);
       // 显示更详细的错误信息
-      if (error.response && error.response.data && error.response.data.error) {
-        message.error(`兑换失败: ${error.response.data.error}`);
+      if (error instanceof Error && 'response' in error) {
+        const apiError = error as { response?: { data?: { error?: string } } };
+        if (apiError.response?.data?.error) {
+          message.error(`兑换失败: ${apiError.response.data.error}`);
+        } else {
+          message.error('兑换失败，请检查兑换码是否有效');
+        }
       } else {
         message.error('兑换失败，请检查兑换码是否有效');
       }

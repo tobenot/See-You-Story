@@ -26,7 +26,7 @@ export const generateStory = (questionsWithAnswers: QuestionWithAnswer[]) => {
 export const saveStory = (data: {
   title: string;
   content: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }) => {
   return axios.post('/story/save', data);
 };

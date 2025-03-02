@@ -3,11 +3,23 @@ import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import * as authApi from '../../api/auth';
 
+interface LoginFormValues {
+  username: string;
+  password: string;
+}
+
+interface LoginResponse {
+  token: string;
+  id: string;
+  username: string;
+  message?: string;
+}
+
 const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
     try {
       const response = await authApi.login({
@@ -15,18 +27,24 @@ const LoginForm: React.FC = () => {
         password: values.password
       });
       
+      const data = response.data as LoginResponse;
+      
       // 保存token和用户信息
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify({
-        id: response.data.id,
-        username: response.data.username
+        id: data.id,
+        username: data.username
       }));
       
-      message.success(response.data.message || '登录成功！');
+      message.success(data.message || '登录成功！');
       navigate('/');
-    } catch (error: any) {
+    } catch (error) {
       console.error('登录失败:', error);
-      message.error(error.response?.data?.message || '登录失败，请检查用户名和密码');
+      if (error instanceof Error) {
+        message.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || '登录失败，请检查用户名和密码');
+      } else {
+        message.error('登录失败，请检查用户名和密码');
+      }
     } finally {
       setLoading(false);
     }

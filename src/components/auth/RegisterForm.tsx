@@ -3,11 +3,21 @@ import { Form, Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import * as authApi from '../../api/auth';
 
+interface RegisterFormValues {
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface RegisterResponse {
+  message?: string;
+}
+
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: RegisterFormValues) => {
     setLoading(true);
     try {
       const response = await authApi.register({
@@ -15,13 +25,18 @@ const RegisterForm: React.FC = () => {
         password: values.password
       });
       
-      message.success(response.data.message || '注册成功！');
+      const data = response.data as RegisterResponse;
+      message.success(data.message || '注册成功！');
       
       // 注册成功后自动跳转到登录页
       navigate('/auth', { state: { activeTab: 'login' } });
-    } catch (error: any) {
+    } catch (error) {
       console.error('注册失败:', error);
-      message.error(error.response?.data?.message || '注册失败，请稍后重试');
+      if (error instanceof Error) {
+        message.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || '注册失败，请稍后重试');
+      } else {
+        message.error('注册失败，请稍后重试');
+      }
     } finally {
       setLoading(false);
     }
