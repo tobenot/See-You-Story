@@ -6,6 +6,7 @@ import StoryResult from './pages/StoryResult';
 import StoryJourney from './pages/StoryJourney';
 import StoryChapter from './pages/StoryChapter';
 import StoryAnalysis from './pages/StoryAnalysis';
+import CharacterExtraction from './pages/CharacterExtraction';
 
 // 验证是否已登录
 const isAuthenticated = () => {
@@ -45,6 +46,10 @@ const routes: RouteObject[] = [
   {
     path: '/story-analysis',
     element: <ProtectedRoute element={<StoryAnalysis />} />,
+  },
+  {
+    path: '/character-extraction',
+    element: <ProtectedRoute element={<CharacterExtraction />} />,
   },
   {
     path: '*',

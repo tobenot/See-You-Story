@@ -142,6 +142,9 @@ const StoryAnalysis: React.FC<StoryAnalysisProps> = () => {
     try {
       await storyApi.saveAnalysisCard(selectedCard);
       message.success('卡片已收藏');
+      
+      // 导航到角色提取页面
+      navigate('/character-extraction', { state: { storyId } });
     } catch (error) {
       console.error('收藏失败:', error);
       message.error('收藏失败，请稍后重试');

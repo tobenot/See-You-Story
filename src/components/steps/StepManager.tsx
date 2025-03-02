@@ -10,62 +10,58 @@ interface Question {
   type: 'options' | 'text';
 }
 
-// 故事旅程类型
-type StoryType = '奇幻冒险' | '科幻未来' | '浪漫爱情' | '悬疑恐怖';
+// 答案类型定义
+interface Answers {
+  [key: string]: string;
+}
 
-// 问题集合
+// 问题集合 - 这些问题是灵活的，可以是意象性的问题
 const questions: Question[] = [
   {
-    id: 'story-type',
-    text: '你喜欢什么类型的故事?',
+    id: 'question-1',
+    text: '当你凝视星空时，内心浮现的第一个画面是什么？',
     options: [
-      { icon: '✨', label: '奇幻冒险', value: '奇幻冒险' },
-      { icon: '🤖', label: '科幻未来', value: '科幻未来' },
-      { icon: '❤️', label: '浪漫爱情', value: '浪漫爱情' },
-      { icon: '👻', label: '悬疑恐怖', value: '悬疑恐怖' },
+      { icon: '✨', label: '广阔无垠的宇宙', value: '广阔无垠的宇宙' },
+      { icon: '🌌', label: '神秘未知的探索', value: '神秘未知的探索' },
+      { icon: '🏠', label: '遥远的家乡', value: '遥远的家乡' },
+      { icon: '👁️', label: '宇宙的眼睛在凝视我', value: '宇宙的眼睛在凝视我' },
     ],
     type: 'options',
   },
   {
-    id: 'story-theme',
-    text: '你希望故事有什么主题?',
-    type: 'text',
-  },
-  {
-    id: 'main-character',
-    text: '描述一下你想要的主角',
-    type: 'text',
-  },
-  {
-    id: 'story-setting',
-    text: '故事的背景设定是什么?',
-    type: 'text',
-  },
-  {
-    id: 'story-length',
-    text: '你想要多长的故事?',
+    id: 'question-2',
+    text: '如果你可以化身为一种元素，你会选择什么？',
     options: [
-      { label: '短篇 (5分钟阅读)', value: 'short' },
-      { label: '中篇 (15分钟阅读)', value: 'medium' },
-      { label: '长篇 (30分钟阅读)', value: 'long' },
+      { icon: '🔥', label: '火焰', value: '火焰' },
+      { icon: '💧', label: '水', value: '水' },
+      { icon: '🌪️', label: '风', value: '风' },
+      { icon: '🏔️', label: '土', value: '土' },
+      { icon: '⚡', label: '雷电', value: '雷电' },
     ],
     type: 'options',
+  },
+  {
+    id: 'question-3',
+    text: '在你的梦境中，最常出现的场景是什么？',
+    type: 'text',
+  },
+  {
+    id: 'question-4',
+    text: '如果世界上所有的颜色只剩下三种，你希望保留哪三种？',
+    type: 'text',
+  },
+  {
+    id: 'question-5',
+    text: '当你面对未知的挑战时，你内心的声音会告诉你什么？',
+    type: 'text',
   },
 ];
 
 const StepManager: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [storyType, setStoryType] = useState<StoryType | null>(null);
-
-  // 当回答第一个问题时，设置故事类型
-  useEffect(() => {
-    if (answers['story-type']) {
-      setStoryType(answers['story-type'] as StoryType);
-    }
-  }, [answers['story-type']]);
-
+  const [answers, setAnswers] = useState<Answers>({});
+  
   const handleAnswer = (answer: string) => {
     const currentQuestion = questions[currentStep];
     
@@ -77,8 +73,14 @@ const StepManager: React.FC = () => {
     
     // 如果是最后一个问题，导航到结果页面
     if (currentStep === questions.length - 1) {
-      // 这里可以发送请求到后端API
-      navigate('/story-result', { state: { answers } });
+      // 发送所有问题和答案到后端
+      const questionsWithAnswers = questions.map(q => ({
+        questionId: q.id,
+        questionText: q.text,
+        answer: answers[q.id] || (q.id === currentQuestion.id ? answer : '')
+      }));
+      
+      navigate('/story-result', { state: { questionsWithAnswers } });
     } else {
       // 否则前进到下一个问题
       setCurrentStep(prev => prev + 1);
@@ -93,6 +95,12 @@ const StepManager: React.FC = () => {
       delete newAnswers[currentQuestion.id];
       return newAnswers;
     });
+  };
+  
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    }
   };
 
   const currentQuestion = questions[currentStep];
@@ -123,6 +131,7 @@ const StepManager: React.FC = () => {
         options={currentQuestion.options}
         onSubmit={handleAnswer}
         onReset={handleReset}
+        onPrevious={handlePrevious}
       />
     </div>
   );

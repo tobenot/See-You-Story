@@ -4,12 +4,18 @@ import { Button, Spin, message } from 'antd';
 import { BookOutlined, ShareAltOutlined, HeartOutlined, HeartFilled, RightCircleOutlined, BarChartOutlined } from '@ant-design/icons';
 import * as storyApi from '../api/story';
 
+interface QuestionWithAnswer {
+  questionId: string;
+  questionText: string;
+  answer: string;
+}
+
 interface StoryResultProps {}
 
 const StoryResult: React.FC<StoryResultProps> = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { answers } = location.state as { answers: Record<string, string> } || { answers: {} };
+  const { questionsWithAnswers } = location.state as { questionsWithAnswers: QuestionWithAnswer[] } || { questionsWithAnswers: [] };
   
   const [loading, setLoading] = useState(true);
   const [story, setStory] = useState<string>('');
@@ -18,8 +24,8 @@ const StoryResult: React.FC<StoryResultProps> = () => {
 
   useEffect(() => {
     // 检查是否有答案数据
-    if (!answers || Object.keys(answers).length === 0) {
-      message.error('找不到故事数据，请重新开始');
+    if (!questionsWithAnswers || questionsWithAnswers.length === 0) {
+      message.error('找不到问题回答数据，请重新开始');
       navigate('/');
       return;
     }
@@ -29,7 +35,7 @@ const StoryResult: React.FC<StoryResultProps> = () => {
       try {
         setLoading(true);
         // 实际调用API生成故事
-        const response = await storyApi.generateStory(answers);
+        const response = await storyApi.generateStory(questionsWithAnswers);
         setStory(response.data.content);
         setStoryId(response.data.id);
         setLoading(false);
@@ -37,25 +43,19 @@ const StoryResult: React.FC<StoryResultProps> = () => {
         console.error('获取故事失败:', error);
         
         // 如果API调用失败，使用本地模拟数据（仅用于演示）
-        const storyType = answers['story-type'] || '未知类型';
-        const theme = answers['story-theme'] || '无主题';
-        const mainCharacter = answers['main-character'] || '无名主角';
-        const setting = answers['story-setting'] || '未知世界';
+        // 提取第一个问题的答案作为故事类型参考
+        const storyTitleRef = questionsWithAnswers[0]?.answer || '未知';
         
         // 生成一个假的故事内容
         const mockStory = `
-# ${storyType}故事：${theme}
+# 基于你的回答生成的故事
 
-在${setting}中，有一位${mainCharacter}。
+这是一个基于你回答的五个问题而生成的故事。你的回答反映了你的想象力和个性。
 
-这是一个自动生成的故事示例，基于您提供的以下要素：
-- 故事类型: ${storyType}
-- 主题: ${theme}
-- 主角: ${mainCharacter}
-- 背景设定: ${setting}
-- 故事长度: ${answers['story-length'] === 'short' ? '短篇' : answers['story-length'] === 'medium' ? '中篇' : '长篇'}
+**你的回答：**
+${questionsWithAnswers.map(qa => `- **${qa.questionText}**: ${qa.answer}`).join('\n')}
 
-实际的故事内容将由后端API生成。这里只是一个前端演示。
+*这个故事将基于你的回答生成。实际上，这只是一个前端演示，真实的故事内容将由后端API生成。*
         `;
         
         setStory(mockStory);
@@ -66,7 +66,7 @@ const StoryResult: React.FC<StoryResultProps> = () => {
     };
 
     fetchStory();
-  }, [answers, navigate]);
+  }, [questionsWithAnswers, navigate]);
 
   const handleLike = async () => {
     try {

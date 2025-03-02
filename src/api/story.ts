@@ -1,12 +1,18 @@
 import axios from './axios';
 
+interface QuestionWithAnswer {
+  questionId: string;
+  questionText: string;
+  answer: string;
+}
+
 /**
  * 生成故事接口
- * @param {object} data - 故事生成参数
+ * @param {QuestionWithAnswer[]} questionsWithAnswers - 问题和答案数组
  * @returns {Promise} - 返回Promise对象
  */
-export const generateStory = (data: Record<string, string>) => {
-  return axios.post('/story/generate', data);
+export const generateStory = (questionsWithAnswers: QuestionWithAnswer[]) => {
+  return axios.post('/story/generate', { questionsWithAnswers });
 };
 
 /**
@@ -119,4 +125,22 @@ export const saveAnalysisCard = (cardId: string) => {
  */
 export const deleteAnalysisCard = (cardId: string) => {
   return axios.delete(`/story/analysis/card/${cardId}`);
+};
+
+/**
+ * 提取故事角色接口
+ * @param {string} storyId - 故事ID
+ * @returns {Promise} - 返回Promise对象，包含角色信息
+ */
+export const extractStoryCharacters = (storyId: string) => {
+  return axios.post(`/story/${storyId}/extract-characters`);
+};
+
+/**
+ * 刷新故事角色接口
+ * @param {string} storyId - 故事ID
+ * @returns {Promise} - 返回Promise对象，包含刷新后的角色信息
+ */
+export const refreshStoryCharacters = (storyId: string) => {
+  return axios.post(`/story/${storyId}/refresh-characters`);
 }; 
