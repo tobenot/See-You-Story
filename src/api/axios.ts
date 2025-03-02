@@ -39,7 +39,12 @@ instance.interceptors.response.use(
       if (error.response.status === 401) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = '/login';
+        window.location.href = '/auth';
+      }
+      
+      // 处理429错误（请求频率超限或账号锁定）
+      if (error.response.status === 429) {
+        console.error('请求频率超限或账号锁定:', error.response.data.message);
       }
     }
     return Promise.reject(error);

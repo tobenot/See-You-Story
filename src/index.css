@@ -9,9 +9,81 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fafafa;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* 表单样式 */
+.ant-input, .ant-input-password {
+  height: 44px;
+  border-radius: 4px !important;
+  border-color: #e5e5e5;
+}
+
+.ant-input:focus, .ant-input-password:focus,
+.ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
+  border-color: #d9d9d9 !important;
+  box-shadow: none !important;
+}
+
+.ant-input::placeholder, .ant-input-password input::placeholder {
+  color: #bfbfbf;
+}
+
+.ant-input-affix-wrapper {
+  border-radius: 4px !important;
+  padding: 0 11px;
+}
+
+/* 按钮样式 */
+.ant-btn-primary {
+  background-color: #333 !important;
+  border-color: #333 !important;
+  border-radius: 4px;
+  height: 44px;
+  font-size: 16px;
+}
+
+.ant-btn-primary:hover, .ant-btn-primary:focus {
+  background-color: #444 !important;
+  border-color: #444 !important;
+}
+
+/* 标签样式 */
+.ant-form-item-label > label {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+/* 登录/注册表单卡片样式 */
+.login-form, .register-form {
+  max-width: 100%;
+}
+
+/* 移除表单项底部边距 */
+.ant-form-item {
+  margin-bottom: 20px;
+}
+
+.ant-form-item-explain-error {
+  font-size: 12px;
+}
+
+/* 导航按钮样式 */
+button {
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+} 
