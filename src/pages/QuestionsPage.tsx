@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Radio, Input, Space, Divider, message } from 'antd';
+import { Typography, Button, Radio, Input, message } from 'antd';
 import { 
   aiService, 
   AnswerSubmitRequest, 
   StoryGenerateRequest, 
-  StoryResponse, 
-  StoryElement, 
-  StoryOption, 
-  StoryMetadata 
+  StoryResponse
 } from '../api/services';
 import { useAuth } from '../hooks/useAuth';
 
-const { Title, Paragraph } = Typography;
 const { TextArea } = Input;
 
 interface Question {
@@ -64,6 +60,8 @@ const QuestionsPage: React.FC = () => {
   const [genre, setGenre] = useState<string>("冒险"); // 默认故事类型
   const [style, setStyle] = useState<string>("叙事性"); // 默认故事风格
   const [worldView, setWorldView] = useState<string>("奇幻"); // 默认世界观
+  const [abandonGeneration, setAbandonGeneration] = useState<boolean>(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]);
 
   // 如果用户未登录，重定向到登录页面
   React.useEffect(() => {
@@ -83,6 +81,11 @@ const QuestionsPage: React.FC = () => {
     if (!answers[currentQuestion]) {
       message.warning('请回答当前问题');
       return;
+    }
+
+    // 将当前问题标记为已回答
+    if (!answeredQuestions.includes(currentQuestion)) {
+      setAnsweredQuestions([...answeredQuestions, currentQuestion]);
     }
 
     if (currentQuestion < standardQuestions.length - 1) {
@@ -139,61 +142,144 @@ const QuestionsPage: React.FC = () => {
     }
   };
 
+  const handleQuestionSelect = (index: number) => {
+    // 只允许选择已回答的问题或下一个待回答的问题
+    if (answeredQuestions.includes(index) || index === answeredQuestions.length) {
+      setCurrentQuestion(index);
+    } else {
+      message.info('请按顺序回答问题');
+    }
+  };
+
+  const isQuestionAnswered = (index: number) => {
+    return answeredQuestions.includes(index);
+  };
+
+  const isQuestionAccessible = (index: number) => {
+    return isQuestionAnswered(index) || index === answeredQuestions.length;
+  };
+
   const currentQuestionData = standardQuestions[currentQuestion];
 
   return (
-    <div style={{ maxWidth: '800px', margin: '20px auto', padding: '0 20px' }}>
-      <Card bordered={false}>
-        <Title level={2} style={{ textAlign: 'center', marginBottom: '30px' }}>
-          故事标签与问答
-        </Title>
-        
-        <div style={{ marginBottom: '30px' }}>
-          <Title level={4}>进度: {currentQuestion + 1}/{standardQuestions.length}</Title>
-          <div style={{ 
-            height: '10px', 
-            background: '#f0f0f0', 
-            borderRadius: '5px', 
-            overflow: 'hidden' 
-          }}>
-            <div style={{ 
-              height: '100%', 
-              width: `${((currentQuestion + 1) / standardQuestions.length) * 100}%`, 
-              background: '#1890ff' 
-            }} />
+    <div className="flex min-h-screen bg-gray-50">
+      {/* 左侧问题导航区域 - 增加宽度 */}
+      <div className="w-1/3 bg-white shadow-md overflow-auto">
+        <div className="p-4 border-b border-gray-200">
+          <h3 className="font-medium text-gray-700">当前世界：个人回答生成（勾选使用认证状态）</h3>
+        </div>
+        <div className="py-2">
+          {standardQuestions.map((question, index) => (
+            <div 
+              key={question.id}
+              className={`p-4 mb-2 mx-2 rounded-lg transition-all duration-300 cursor-pointer 
+                ${index === currentQuestion ? 'bg-gray-200 shadow-md' : 'bg-white'} 
+                ${isQuestionAccessible(index) ? 'opacity-100 hover:bg-gray-100' : 'opacity-50 cursor-not-allowed'}
+                ${isQuestionAnswered(index) ? 'border-l-4 border-green-500' : ''}
+              `}
+              onClick={() => handleQuestionSelect(index)}
+            >
+              <div className="flex items-center mb-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 
+                  ${index === currentQuestion ? 'bg-gray-700 text-white' : 
+                    isQuestionAnswered(index) ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+                >
+                  <span className="text-sm font-medium">Q{index + 1}</span>
+                </div>
+                <span className={`text-lg ${index === currentQuestion ? 'font-medium' : 'text-gray-600'}`}>
+                  Q{index + 1}
+                </span>
+              </div>
+              {isQuestionAccessible(index) && (
+                <p className="text-sm text-gray-500 ml-11 line-clamp-2">{question.text}</p>
+              )}
+              {isQuestionAnswered(index) && (
+                <div className="ml-11 mt-2 text-xs text-gray-400 italic">
+                  已回答: {answers[index]?.substring(0, 50)}...
+                </div>
+              )}
+            </div>
+          ))}
+          <div className="p-4 mx-2 mb-2 rounded-lg bg-white">
+            <div className="flex items-center">
+              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-3">
+                <span className="text-sm font-medium text-gray-700">Q5</span>
+              </div>
+              <span className="text-lg text-gray-600">问题详细描述</span>
+            </div>
           </div>
         </div>
-
-        <div style={{ marginBottom: '30px' }}>
-          <Title level={3}>{currentQuestion + 1}. {currentQuestionData.text}</Title>
-          <Paragraph type="secondary">
-            → {currentQuestionData.description}
-          </Paragraph>
-          <TextArea
-            rows={6}
-            placeholder={currentQuestionData.placeholder}
-            value={answers[currentQuestion] || ''}
-            onChange={handleAnswerChange}
-            style={{ marginTop: '15px' }}
-          />
+        
+        <div className="absolute bottom-0 left-0 w-1/3">
+          <div className="flex justify-between p-4 border-t border-gray-200">
+            <button className="bg-gray-800 text-white px-4 py-2 rounded text-sm">开始演绎</button>
+            <button className="border border-gray-300 px-4 py-2 rounded text-sm">结束演绎</button>
+          </div>
         </div>
+      </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button 
-            onClick={handlePrevious}
-            disabled={currentQuestion === 0}
-          >
-            上一题
-          </Button>
-          <Button 
-            type="primary" 
-            onClick={handleNext}
-            loading={loading && currentQuestion === standardQuestions.length - 1}
-          >
-            {currentQuestion < standardQuestions.length - 1 ? '下一题' : '提交并生成故事'}
-          </Button>
+      {/* 右侧内容区域 */}
+      <div className="flex-1 p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 max-w-3xl mx-auto">
+          {/* 放弃生成选项 */}
+          <div className="mb-6">
+            <label className="flex items-center">
+              <input 
+                type="checkbox" 
+                className="form-checkbox h-5 w-5 text-blue-600"
+                checked={abandonGeneration}
+                onChange={(e) => setAbandonGeneration(e.target.checked)}
+              />
+              <span className="ml-2 text-sm text-gray-700">放弃内容生成（三星互行结给出退款）</span>
+            </label>
+          </div>
+
+          {/* 问题标题和导航 */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold">Q{currentQuestion + 1}</h2>
+            <div className="text-sm text-gray-500">
+              {currentQuestion + 1} / {standardQuestions.length}
+            </div>
+          </div>
+
+          {/* 问题内容 */}
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-2">{currentQuestionData.text}</h3>
+            <p className="text-gray-600 mb-4">{currentQuestionData.description}</p>
+            <TextArea
+              rows={6}
+              placeholder={currentQuestionData.placeholder}
+              value={answers[currentQuestion] || ''}
+              onChange={handleAnswerChange}
+              className="w-full border border-gray-300 rounded p-2"
+            />
+          </div>
+
+          {/* 导航按钮 */}
+          <div className="flex justify-between">
+            <button 
+              onClick={handlePrevious}
+              disabled={currentQuestion === 0}
+              className={`px-4 py-2 rounded flex items-center ${currentQuestion === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              上一题
+            </button>
+            <button 
+              onClick={handleNext}
+              className={`px-4 py-2 rounded flex items-center ${answers[currentQuestion] ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
+              disabled={!answers[currentQuestion]}
+            >
+              {currentQuestion < standardQuestions.length - 1 ? '下一题' : '完成'}
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };
