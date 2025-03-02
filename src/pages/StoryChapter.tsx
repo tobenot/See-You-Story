@@ -11,9 +11,7 @@ interface StoryOption {
   text: string;
 }
 
-interface StoryChapterProps {}
-
-const StoryChapter: React.FC<StoryChapterProps> = () => {
+const StoryChapter: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { storyId, chapterId } = location.state as { storyId: string; chapterId: string } || 

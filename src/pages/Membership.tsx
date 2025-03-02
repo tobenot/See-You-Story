@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, message, Spin } from 'antd';
+import { Button, Input, message } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import Layout from '../components/Layout';
 import * as membershipApi from '../api/membership';
@@ -16,6 +16,7 @@ const Membership: React.FC = () => {
   const [paymentPeriod, setPaymentPeriod] = useState<'monthly' | 'quarterly'>('monthly');
   const [redeemCode, setRedeemCode] = useState('');
   const [membershipInfo, setMembershipInfo] = useState<MembershipInfo | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
   const [redeeming, setRedeeming] = useState(false);
 
@@ -76,6 +77,7 @@ const Membership: React.FC = () => {
     
     try {
       setRedeeming(true);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await membershipApi.redeemCode(redeemCode);
       message.success('兑换成功，会员权益已更新');
       

@@ -27,7 +27,9 @@
     "dev": "set PORT=3001 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -48,7 +50,9 @@
     ]
   },
   "devDependencies": {
+    "@typescript-eslint/parser": "^5.62.0",
     "autoprefixer": "^10.4.15",
+    "eslint": "^8.57.1",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3"
   }

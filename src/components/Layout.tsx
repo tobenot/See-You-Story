@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Layout as AntLayout, Menu, Button } from 'antd';
+import { Layout as AntLayout, Button } from 'antd';
 import { BookOutlined, UserOutlined, GiftOutlined } from '@ant-design/icons';
 
 const { Header, Content } = AntLayout;

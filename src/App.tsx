@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import routes from './routes';
 
 const App: React.FC = () => {

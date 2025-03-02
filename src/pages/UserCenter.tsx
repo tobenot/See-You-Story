@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Tabs, Button, List, Avatar, message } from 'antd';
+import { Card, Tabs, Button, Avatar, message } from 'antd';
 import { LogoutOutlined, UserOutlined, BookOutlined, HistoryOutlined, CrownOutlined } from '@ant-design/icons';
 import Layout from '../components/Layout';
 import * as authApi from '../api/auth';
@@ -20,6 +20,7 @@ interface UserInfo {
 const UserCenter: React.FC = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

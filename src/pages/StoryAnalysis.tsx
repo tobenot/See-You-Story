@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Spin, message, Modal } from 'antd';
-import { BookOutlined, UserOutlined, CommentOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
+import { BookOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
 import AnalysisCard from '../components/story/AnalysisCard';
 import WorldViewCard from '../components/story/WorldViewCard';
 import * as storyApi from '../api/story';
@@ -20,9 +20,7 @@ interface WorldViewCardData {
   tags: string[];
 }
 
-interface StoryAnalysisProps {}
-
-const StoryAnalysis: React.FC<StoryAnalysisProps> = () => {
+const StoryAnalysis: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { storyId } = location.state as { storyId: string } || { storyId: '' };
@@ -80,6 +78,7 @@ const StoryAnalysis: React.FC<StoryAnalysisProps> = () => {
     fetchAnalysis();
   }, [storyId, navigate]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGoHome = () => {
     navigate('/');
   };

@@ -14,9 +14,7 @@ interface Character {
   tags?: string[];
 }
 
-interface CharacterExtractionProps {}
-
-const CharacterExtraction: React.FC<CharacterExtractionProps> = () => {
+const CharacterExtraction: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { storyId } = location.state as { storyId: string } || { storyId: '' };
@@ -27,6 +25,8 @@ const CharacterExtraction: React.FC<CharacterExtractionProps> = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [refreshCount, setRefreshCount] = useState(0);
   const [maxRefreshCount, setMaxRefreshCount] = useState(3);
+  // 未来将使用，暂时禁用警告
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [limitModalVisible, setLimitModalVisible] = useState(false);
   
@@ -118,6 +118,8 @@ const CharacterExtraction: React.FC<CharacterExtractionProps> = () => {
     }
   };
 
+  // 未来将使用，暂时禁用警告
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSubscribe = () => {
     // 这里应该跳转到订阅页面或者打开订阅对话框
     setShowSubscriptionModal(false);

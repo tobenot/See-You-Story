@@ -12,6 +12,7 @@ interface UserInfo {
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ const Home: React.FC = () => {
     navigate('/story-journey');
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleLogout = async () => {
     try {
       await authApi.logout();

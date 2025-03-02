@@ -11,9 +11,7 @@ interface QuestionWithAnswer {
   answer: string;
 }
 
-interface StoryResultProps {}
-
-const StoryResult: React.FC<StoryResultProps> = () => {
+const StoryResult: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { questionsWithAnswers } = location.state as { questionsWithAnswers: QuestionWithAnswer[] } || { questionsWithAnswers: [] };
@@ -27,7 +25,7 @@ const StoryResult: React.FC<StoryResultProps> = () => {
   const [fetchError, setFetchError] = useState(false); // 添加请求错误状态
 
   // 使用静态变量来确保即使多个组件实例也共享一个锁
-  if (typeof window !== 'undefined' && !window.hasOwnProperty('storyRequestLock')) {
+  if (typeof window !== 'undefined' && !('storyRequestLock' in window)) {
     Object.defineProperty(window, 'storyRequestLock', {
       value: false,
       writable: true
@@ -169,7 +167,7 @@ const StoryResult: React.FC<StoryResultProps> = () => {
     return () => {
       resetRequestLock();
     };
-  }, [questionsWithAnswers, navigate, storyGenerated, story, storyId]);
+  }, [questionsWithAnswers, navigate, storyGenerated, story, storyId, fetchError]);
 
   const handleLike = async () => {
     try {
