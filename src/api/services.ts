@@ -1,6 +1,44 @@
 import axios from './axios';
 import { ChatMessage, User } from '../types';
 
+// API接口类型定义
+export interface AnswerSubmitRequest {
+  answers: {[key: number]: string};
+}
+
+export interface StoryGenerateRequest {
+  answers: {[key: number]: string};
+  genre: string;
+  style: string;
+  worldView: string;
+}
+
+export interface StoryElement {
+  key: string;
+  value: string;
+  source: string;
+}
+
+export interface StoryOption {
+  id: number;
+  text: string;
+}
+
+export interface StoryMetadata {
+  genre: string;
+  style: string;
+  worldView: string;
+  createdAt: string;
+}
+
+export interface StoryResponse {
+  storyId: number;
+  storyContent: string;
+  elements: StoryElement[];
+  options: StoryOption[];
+  metadata: StoryMetadata;
+}
+
 // 认证服务
 export const authService = {
   // 用户注册
@@ -46,6 +84,36 @@ export const aiService = {
   // 获取可用的AI模型
   getModels: () => {
     return axios.get('/ai/models');
+  },
+  
+  // 提交问题答案并生成故事
+  generateStory: (request: StoryGenerateRequest) => {
+    return axios.post('/ai/generate-story', request);
+  },
+  
+  // 更新故事走向
+  updateStoryDirection: (storyId: string, choice: string) => {
+    return axios.post('/ai/update-story', { storyId, choice });
+  },
+  
+  // 提交问题答案
+  submitQuestionAnswers: (request: AnswerSubmitRequest) => {
+    return axios.post('/ai/submit-answers', request);
+  },
+  
+  // 获取故事模板
+  getStoryTemplates: () => {
+    return axios.get('/ai/story-templates');
+  },
+  
+  // 获取标准问题
+  getStandardQuestions: () => {
+    return axios.get('/ai/standard-questions');
+  },
+  
+  // 生成故事分析卡片
+  generateAnalysis: (storyContent: string, elements: StoryElement[], storyId?: number) => {
+    return axios.post('/ai/generate-analysis', { storyContent, elements, storyId });
   }
 };
 

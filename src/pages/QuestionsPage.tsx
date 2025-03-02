@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Button, Radio, Input, Space, Divider, message } from 'antd';
-import { aiService } from '../api/services';
+import { 
+  aiService, 
+  AnswerSubmitRequest, 
+  StoryGenerateRequest, 
+  StoryResponse, 
+  StoryElement, 
+  StoryOption, 
+  StoryMetadata 
+} from '../api/services';
 import { useAuth } from '../hooks/useAuth';
 
 const { Title, Paragraph } = Typography;
@@ -53,6 +61,9 @@ const QuestionsPage: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [answers, setAnswers] = useState<{[key: number]: string}>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const [genre, setGenre] = useState<string>("冒险"); // 默认故事类型
+  const [style, setStyle] = useState<string>("叙事性"); // 默认故事风格
+  const [worldView, setWorldView] = useState<string>("奇幻"); // 默认世界观
 
   // 如果用户未登录，重定向到登录页面
   React.useEffect(() => {
@@ -90,18 +101,37 @@ const QuestionsPage: React.FC = () => {
   const handleSubmitAllAnswers = async () => {
     setLoading(true);
     try {
-      // 在实际项目中，这里应该调用API将答案提交到后端
-      // 这里模拟API调用
-      // const response = await aiService.submitQuestionAnswers(answers);
+      // 根据后端API格式调整请求
+      const submitRequest: AnswerSubmitRequest = {
+        answers: answers
+      };
       
-      // 模拟处理成功
-      setTimeout(() => {
-        setLoading(false);
-        // 提交成功后导航到故事生成页面
-        navigate('/story-generation', { 
-          state: { answers } 
-        });
-      }, 1500);
+      // 1. 首先提交问题答案
+      await aiService.submitQuestionAnswers(submitRequest);
+      
+      // 2. 然后调用故事生成API
+      const storyRequest: StoryGenerateRequest = {
+        answers: answers,
+        genre: genre,
+        style: style,
+        worldView: worldView
+      };
+      
+      const storyResponse = await aiService.generateStory(storyRequest);
+      const storyData: StoryResponse = storyResponse.data;
+      
+      setLoading(false);
+      
+      // 3. 提交成功后导航到故事生成页面，并传递数据
+      navigate('/story-generation', { 
+        state: { 
+          storyId: storyData.storyId,
+          storyContent: storyData.storyContent,
+          elements: storyData.elements,
+          options: storyData.options,
+          metadata: storyData.metadata
+        } 
+      });
     } catch (error) {
       console.error('提交答案失败', error);
       message.error('提交失败，请重试');
