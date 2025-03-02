@@ -145,12 +145,12 @@ const StoryResult: React.FC = () => {
         
         setLoading(false);
       } catch (error) {
-        message.error('获取故事失败:', error);
+        message.error('获取故事失败');
+        message.error('故事生成失败，请检查网络连接后重试');
         setFetchError(true); // 设置错误状态
         
         // 显示暂时性的提示，但不使用模拟数据，让用户可以重试
         setLoading(false);
-        message.error('故事生成失败，请检查网络连接后重试');
       } finally {
         // 请求结束后释放请求锁
         resetRequestLock();
@@ -181,7 +181,7 @@ const StoryResult: React.FC = () => {
         message.success('已添加到收藏');
       }
     } catch (error) {
-      message.error('操作失败:', error);
+      message.error('操作失败');
       message.error('操作失败，请稍后重试');
     }
   };
@@ -200,7 +200,7 @@ const StoryResult: React.FC = () => {
           message.info(`分享链接: ${shareLink}`);
         });
     } catch (error) {
-      message.error('分享失败:', error);
+      message.error('分享失败');
       message.error('分享失败，请稍后重试');
     }
   };

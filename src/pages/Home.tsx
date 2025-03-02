@@ -23,7 +23,7 @@ const Home: React.FC = () => {
         const userInfo = JSON.parse(userStr);
         setUser(userInfo);
       } catch (e) {
-        message.error('解析用户信息失败', e);
+        message.error('解析用户信息失败');
       }
     }
   }, []);
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
     try {
       await authApi.logout();
     } catch (error) {
-      message.error('登出请求失败', error);
+      message.error('登出请求失败');
     }
     
     // 无论API是否成功，都清除本地存储并跳转

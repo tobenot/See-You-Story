@@ -31,7 +31,6 @@ const RegisterForm: React.FC = () => {
       // 注册成功后自动跳转到登录页
       navigate('/auth', { state: { activeTab: 'login' } });
     } catch (error) {
-      message.error('注册失败:', error);
       if (error instanceof Error) {
         message.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || '注册失败，请稍后重试');
       } else {

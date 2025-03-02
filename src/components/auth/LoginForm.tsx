@@ -39,7 +39,6 @@ const LoginForm: React.FC = () => {
       message.success(data.message || '登录成功！');
       navigate('/');
     } catch (error) {
-      message.error('登录失败:', error);
       if (error instanceof Error) {
         message.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || '登录失败，请检查用户名和密码');
       } else {

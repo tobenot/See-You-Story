@@ -35,7 +35,7 @@ const Membership: React.FC = () => {
           setSelectedPlan('free');
         }
       } catch (error) {
-        message.error('获取会员信息失败:', error);
+        message.error('获取会员信息失败');
         // 如果获取失败，默认设置为免费会员
         setSelectedPlan('free');
       } finally {
@@ -62,7 +62,7 @@ const Membership: React.FC = () => {
       const response = await membershipApi.getMembershipInfo();
       setMembershipInfo(response.data);
     } catch (error) {
-      message.error('订阅失败:', error);
+      message.error('订阅失败');
       message.error('订阅失败，请稍后重试');
     } finally {
       setLoading(false);
@@ -86,15 +86,11 @@ const Membership: React.FC = () => {
       setMembershipInfo(membershipResponse.data);
       setRedeemCode(''); // 清空兑换码输入框
     } catch (error) {
-      message.error('兑换失败:', error);
-      // 显示更详细的错误信息
-      if (error instanceof Error && 'response' in error) {
-        const apiError = error as { response?: { data?: { error?: string } } };
-        if (apiError.response?.data?.error) {
-          message.error(`兑换失败: ${apiError.response.data.error}`);
-        } else {
-          message.error('兑换失败，请检查兑换码是否有效');
-        }
+      if ((error as any).response?.data?.error) {
+        const apiError = error as { response: { data: { error: string } } };
+        message.error(`兑换失败: ${apiError.response.data.error}`);
+      } else if (error instanceof Error) {
+        message.error('兑换失败，请检查兑换码是否有效');
       } else {
         message.error('兑换失败，请检查兑换码是否有效');
       }

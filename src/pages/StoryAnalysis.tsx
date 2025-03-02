@@ -48,7 +48,7 @@ const StoryAnalysis: React.FC = () => {
           const response = await storyApi.getStoryAnalysis(storyId);
           analysisData = response.data;
         } catch (apiError) {
-          message.warn('API调用失败，使用模拟数据:', apiError);
+          message.warning('API调用失败，使用模拟数据');
           // 使用模拟数据
           analysisData = {
             analysisCard: {
@@ -69,7 +69,7 @@ const StoryAnalysis: React.FC = () => {
         setWorldViewCard(analysisData.worldViewCard);
         setLoading(false);
       } catch (error) {
-        message.error('获取分析失败:', error);
+        message.error('获取分析失败');
         message.error('获取分析失败，请稍后重试');
         setLoading(false);
       }
@@ -100,7 +100,7 @@ const StoryAnalysis: React.FC = () => {
       await storyApi.saveAnalysisCard(cardId);
       message.success('卡片已保存');
     } catch (error) {
-      message.error('保存失败:', error);
+      message.error('保存失败');
       message.error('保存失败，请稍后重试');
     }
   };
@@ -126,7 +126,7 @@ const StoryAnalysis: React.FC = () => {
           }
           setSelectedCard(null);
         } catch (error) {
-          message.error('删除失败:', error);
+          message.error('删除失败');
           message.error('删除失败，请稍后重试');
         }
       }
@@ -146,7 +146,7 @@ const StoryAnalysis: React.FC = () => {
       // 导航到角色提取页面
       navigate('/character-extraction', { state: { storyId } });
     } catch (error) {
-      message.error('收藏失败:', error);
+      message.error('收藏失败');
       message.error('收藏失败，请稍后重试');
     }
   };
