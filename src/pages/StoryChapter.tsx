@@ -4,6 +4,7 @@ import { Button, Spin, message } from 'antd';
 import { RollbackOutlined, BookOutlined } from '@ant-design/icons';
 import StoryChapterOptions from '../components/story/StoryChapterOptions';
 import * as storyApi from '../api/story';
+import Layout from '../components/Layout';
 
 interface StoryOption {
   id: string;
@@ -116,7 +117,7 @@ const StoryChapter: React.FC<StoryChapterProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <Layout>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">故事旅程</h1>
@@ -144,7 +145,7 @@ const StoryChapter: React.FC<StoryChapterProps> = () => {
           />
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

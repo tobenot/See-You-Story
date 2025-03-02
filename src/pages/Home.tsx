@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dropdown, Menu, message } from 'antd';
-import { BookOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Button, Card, Row, Col, message } from 'antd';
+import { BookOutlined, RightOutlined } from '@ant-design/icons';
 import * as authApi from '../api/auth';
+import Layout from '../components/Layout';
 
 interface UserInfo {
   id: number;
@@ -44,92 +45,64 @@ const Home: React.FC = () => {
     navigate('/auth');
   };
 
-  // 用户菜单
-  const userMenu = (
-    <Menu
-      items={[
-        {
-          key: 'logout',
-          icon: <LogoutOutlined />,
-          label: '退出登录',
-          onClick: handleLogout,
-        },
-      ]}
-    />
-  );
-
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <Layout>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
-        <div className="flex justify-between items-center border-b pb-4 mb-6">
-          <h1 className="text-2xl font-bold">故事旅程</h1>
-          {user && (
-            <Dropdown overlay={userMenu} placement="bottomRight">
-              <div className="flex items-center cursor-pointer">
-                <UserOutlined className="mr-1" />
-                <span>{user.username}</span>
-              </div>
-            </Dropdown>
-          )}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">欢迎来到故事旅程</h1>
+          <p className="text-gray-600">创造专属于你的故事世界，开启奇妙冒险</p>
         </div>
-        
-        <div className="flex flex-col md:flex-row items-start">
-          <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <div className="flex items-center text-lg font-medium">
-              <BookOutlined className="mr-2" />
-              故事旅程
-            </div>
-          </div>
-          
-          <div className="w-full md:w-3/4">
-            <div className="bg-white p-6 rounded shadow-sm border border-gray-200 mb-6">
-              <h2 className="text-xl font-medium mb-4">开始您的故事旅程</h2>
-              <p className="text-gray-600 mb-6">
-                欢迎来到"故事旅程"！这是一个帮助您创建个性化故事的平台。
-                通过回答一系列问题，我们将为您定制一个独特的故事。
-                无论您喜欢奇幻冒险、科幻未来、浪漫爱情还是悬疑恐怖，
-                我们都能为您创造一个专属的故事世界。
-              </p>
-              
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="p-4 border border-gray-200 rounded-lg flex-1">
-                  <h3 className="font-medium mb-2">如何开始</h3>
-                  <p className="text-gray-600">
-                    点击下方的"开始旅程"按钮，然后回答一系列关于您理想故事的问题。
-                  </p>
-                </div>
-                
-                <div className="p-4 border border-gray-200 rounded-lg flex-1">
-                  <h3 className="font-medium mb-2">生成您的故事</h3>
-                  <p className="text-gray-600">
-                    完成所有问题后，我们的系统将生成一个独特的故事，专为您量身定制。
-                  </p>
-                </div>
-                
-                <div className="p-4 border border-gray-200 rounded-lg flex-1">
-                  <h3 className="font-medium mb-2">保存与分享</h3>
-                  <p className="text-gray-600">
-                    您可以保存您的故事，随时查阅，或者与朋友分享您的创作。
-                  </p>
-                </div>
+
+        <Row gutter={[24, 24]} className="mb-8">
+          <Col xs={24} md={8}>
+            <Card 
+              hoverable 
+              className="h-full"
+              onClick={handleStartJourney}
+            >
+              <div className="text-center">
+                <BookOutlined style={{ fontSize: '48px', color: '#1890ff' }} className="mb-4" />
+                <h3 className="text-xl font-bold mb-2">创建新故事</h3>
+                <p className="text-gray-600">回答几个简单问题，生成专属于你的故事</p>
               </div>
-            </div>
-            
-            <div className="text-center">
-              <Button 
-                type="primary" 
-                size="large" 
-                icon={<BookOutlined />}
-                onClick={handleStartJourney}
-                className="px-8 h-12"
-              >
-                开始旅程
-              </Button>
-            </div>
+            </Card>
+          </Col>
+          <Col xs={24} md={8}>
+            <Card hoverable className="h-full">
+              <div className="text-center">
+                <BookOutlined style={{ fontSize: '48px', color: '#52c41a' }} className="mb-4" />
+                <h3 className="text-xl font-bold mb-2">继续旅程</h3>
+                <p className="text-gray-600">继续你未完成的故事旅程</p>
+              </div>
+            </Card>
+          </Col>
+          <Col xs={24} md={8}>
+            <Card hoverable className="h-full">
+              <div className="text-center">
+                <BookOutlined style={{ fontSize: '48px', color: '#fa8c16' }} className="mb-4" />
+                <h3 className="text-xl font-bold mb-2">我的收藏</h3>
+                <p className="text-gray-600">查看你收藏的故事</p>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+
+        <div className="bg-blue-50 p-6 rounded-lg flex justify-between items-center mb-8">
+          <div>
+            <h3 className="text-xl font-bold mb-1">升级到高级会员</h3>
+            <p className="text-gray-600">解锁更多精彩功能，获得无限创作体验</p>
           </div>
+          <Button 
+            type="primary" 
+            size="large" 
+            icon={<RightOutlined />}
+            onClick={() => navigate('/membership')}
+          >
+            查看会员特权
+          </Button>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

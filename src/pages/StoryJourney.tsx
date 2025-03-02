@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import StepManager from '../components/steps/StepManager';
 import { BookOutlined } from '@ant-design/icons';
+import Layout from '../components/Layout';
 
 const StoryJourney: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const StoryJourney: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <Layout>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="flex justify-between items-center border-b pb-4 mb-6">
           <h1 className="text-2xl font-bold">故事旅程</h1>
@@ -23,7 +24,7 @@ const StoryJourney: React.FC = () => {
         
         <StepManager />
       </div>
-    </div>
+    </Layout>
   );
 };
 

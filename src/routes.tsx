@@ -7,6 +7,8 @@ import StoryJourney from './pages/StoryJourney';
 import StoryChapter from './pages/StoryChapter';
 import StoryAnalysis from './pages/StoryAnalysis';
 import CharacterExtraction from './pages/CharacterExtraction';
+import Membership from './pages/Membership';
+import UserCenter from './pages/UserCenter';
 
 // 验证是否已登录
 const isAuthenticated = () => {
@@ -50,6 +52,14 @@ const routes: RouteObject[] = [
   {
     path: '/character-extraction',
     element: <ProtectedRoute element={<CharacterExtraction />} />,
+  },
+  {
+    path: '/membership',
+    element: <ProtectedRoute element={<Membership />} />,
+  },
+  {
+    path: '/user-center',
+    element: <ProtectedRoute element={<UserCenter />} />,
   },
   {
     path: '*',

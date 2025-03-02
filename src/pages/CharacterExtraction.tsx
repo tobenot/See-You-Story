@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Spin, message, Card, Avatar, Modal } from 'antd';
 import { UserOutlined, SyncOutlined, CrownOutlined, BookOutlined } from '@ant-design/icons';
 import * as storyApi from '../api/story';
+import Layout from '../components/Layout';
 
 interface Character {
   id: string;
@@ -27,6 +28,7 @@ const CharacterExtraction: React.FC<CharacterExtractionProps> = () => {
   const [refreshCount, setRefreshCount] = useState(0);
   const [maxRefreshCount, setMaxRefreshCount] = useState(3);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [limitModalVisible, setLimitModalVisible] = useState(false);
   
   useEffect(() => {
     if (!storyId) {
@@ -141,9 +143,11 @@ const CharacterExtraction: React.FC<CharacterExtractionProps> = () => {
     }
   };
 
+  const canRefresh = !refreshing && (isSubscribed || refreshCount < maxRefreshCount);
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <Layout>
         <div className="container mx-auto px-4 py-6 max-w-5xl">
           <div className="flex justify-between items-center border-b pb-4 mb-6">
             <div className="flex items-center">
@@ -171,27 +175,21 @@ const CharacterExtraction: React.FC<CharacterExtractionProps> = () => {
             <p className="text-gray-500 mt-2">我们正在从您的故事中提取关键角色</p>
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <Layout>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="flex justify-between items-center border-b pb-4 mb-6">
-          <div className="flex items-center">
-            <BookOutlined className="mr-2" />
-            <h1 className="text-2xl font-bold">故事旅程</h1>
-          </div>
-          <div>
-            <Button 
-              className="mr-2" 
-              onClick={handleGoToProfile}
-            >
-              个人中心
+          <h1 className="text-2xl font-bold">角色提取</h1>
+          <div className="flex items-center space-x-2">
+            <Button icon={<SyncOutlined />} onClick={handleRefreshCharacters} disabled={refreshing || !canRefresh}>
+              刷新角色
             </Button>
-            <Button onClick={handleFeedback}>
-              反馈
+            <Button icon={<BookOutlined />} onClick={() => navigate('/')}>
+              返回首页
             </Button>
           </div>
         </div>
@@ -252,46 +250,19 @@ const CharacterExtraction: React.FC<CharacterExtractionProps> = () => {
             保存角色
           </Button>
         </div>
+        
+        <Modal
+          title="提示"
+          open={limitModalVisible}
+          onOk={() => navigate('/membership')}
+          onCancel={() => setLimitModalVisible(false)}
+          okText="升级会员"
+          cancelText="取消"
+        >
+          <p>您今日的角色刷新次数已用完，升级会员可获得更多刷新次数。</p>
+        </Modal>
       </div>
-      
-      <Modal
-        title="订阅会员"
-        open={showSubscriptionModal}
-        onCancel={() => setShowSubscriptionModal(false)}
-        footer={[
-          <Button key="cancel" onClick={() => setShowSubscriptionModal(false)}>
-            取消
-          </Button>,
-          <Button key="subscribe" type="primary" onClick={handleSubscribe}>
-            立即订阅
-          </Button>
-        ]}
-      >
-        <div className="py-4">
-          <div className="flex items-center mb-4">
-            <CrownOutlined className="text-yellow-500 text-2xl mr-3" />
-            <div>
-              <h3 className="font-medium">会员特权</h3>
-              <p className="text-gray-500">解锁更多功能</p>
-            </div>
-          </div>
-          <ul className="space-y-2">
-            <li className="flex items-center">
-              <span className="mr-2">✓</span>
-              <span>无限制刷新故事角色</span>
-            </li>
-            <li className="flex items-center">
-              <span className="mr-2">✓</span>
-              <span>每天生成更多故事</span>
-            </li>
-            <li className="flex items-center">
-              <span className="mr-2">✓</span>
-              <span>与角色无限对话</span>
-            </li>
-          </ul>
-        </div>
-      </Modal>
-    </div>
+    </Layout>
   );
 };
 

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Spin, message } from 'antd';
 import { BookOutlined, ShareAltOutlined, HeartOutlined, HeartFilled, RightCircleOutlined, BarChartOutlined } from '@ant-design/icons';
 import * as storyApi from '../api/story';
+import Layout from '../components/Layout';
 
 interface QuestionWithAnswer {
   questionId: string;
@@ -262,7 +263,7 @@ const StoryResult: React.FC<StoryResultProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <Layout>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">您的故事</h1>
@@ -319,7 +320,7 @@ const StoryResult: React.FC<StoryResultProps> = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

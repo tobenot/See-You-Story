@@ -5,6 +5,7 @@ import { BookOutlined, UserOutlined, CommentOutlined, DeleteOutlined, SaveOutlin
 import AnalysisCard from '../components/story/AnalysisCard';
 import WorldViewCard from '../components/story/WorldViewCard';
 import * as storyApi from '../api/story';
+import Layout from '../components/Layout';
 
 interface AnalysisCardData {
   id: string;
@@ -161,7 +162,7 @@ const StoryAnalysis: React.FC<StoryAnalysisProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <Layout>
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         <div className="flex justify-between items-center border-b pb-4 mb-6">
           <div className="flex items-center">
@@ -233,7 +234,7 @@ const StoryAnalysis: React.FC<StoryAnalysisProps> = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
