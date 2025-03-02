@@ -44,7 +44,7 @@ instance.interceptors.response.use(
       
       // 处理429错误（请求频率超限或账号锁定）
       if (error.response.status === 429) {
-        console.error('请求频率超限或账号锁定:', error.response.data.message);
+        message.error('请求频率超限或账号锁定:', error.response.data.message);
       }
     }
     return Promise.reject(error);

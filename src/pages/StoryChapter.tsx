@@ -39,7 +39,7 @@ const StoryChapter: React.FC = () => {
           const response = await storyApi.getStoryChapter(storyId, chapterId);
           chapterData = response.data;
         } catch (apiError) {
-          console.warn('API调用失败，使用模拟数据:', apiError);
+          message.warn('API调用失败，使用模拟数据:', apiError);
           // 使用模拟数据
           chapterData = {
             id: chapterId,
@@ -58,7 +58,7 @@ const StoryChapter: React.FC = () => {
         setOptions(chapterData.options);
         setLoading(false);
       } catch (error) {
-        console.error('获取章节失败:', error);
+        message.error('获取章节失败:', error);
         message.error('获取章节失败，请稍后重试');
         setLoading(false);
       }
@@ -78,7 +78,7 @@ const StoryChapter: React.FC = () => {
         const response = await storyApi.selectStoryOption(storyId, chapterId, optionId);
         nextChapterId = response.data.nextChapterId;
       } catch (apiError) {
-        console.warn('API调用失败，使用模拟数据:', apiError);
+        message.warn('API调用失败，使用模拟数据:', apiError);
         // 模拟API调用，生成下一章节ID
         nextChapterId = String(parseInt(chapterId, 10) + 1);
       }
@@ -91,7 +91,7 @@ const StoryChapter: React.FC = () => {
         } 
       });
     } catch (error) {
-      console.error('选择选项失败:', error);
+      message.error('选择选项失败:', error);
       message.error('选择失败，请稍后重试');
       setLoading(false);
     }

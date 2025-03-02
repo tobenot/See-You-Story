@@ -87,14 +87,14 @@ const StoryResult: React.FC = () => {
           setLoading(false);
         } else {
           if (cacheExpired) {
-            console.log('缓存已过期，需要重新生成故事');
+            message.info('缓存已过期，需要重新生成故事');
           } else {
-            console.log('问题答案已更改，需要重新生成故事');
+            message.info('问题答案已更改，需要重新生成故事');
           }
           // 不设置storyGenerated，这样会触发后续的useEffect重新生成故事
         }
       } catch (error) {
-        console.error('解析缓存的故事数据时出错:', error);
+        message.error('解析缓存的故事数据时出错，正在重新生成故事');
         localStorage.removeItem('generatedStoryData'); // 清除可能损坏的缓存数据
       }
     }
@@ -145,7 +145,7 @@ const StoryResult: React.FC = () => {
         
         setLoading(false);
       } catch (error) {
-        console.error('获取故事失败:', error);
+        message.error('获取故事失败:', error);
         setFetchError(true); // 设置错误状态
         
         // 显示暂时性的提示，但不使用模拟数据，让用户可以重试
@@ -181,7 +181,7 @@ const StoryResult: React.FC = () => {
         message.success('已添加到收藏');
       }
     } catch (error) {
-      console.error('操作失败:', error);
+      message.error('操作失败:', error);
       message.error('操作失败，请稍后重试');
     }
   };
@@ -200,7 +200,7 @@ const StoryResult: React.FC = () => {
           message.info(`分享链接: ${shareLink}`);
         });
     } catch (error) {
-      console.error('分享失败:', error);
+      message.error('分享失败:', error);
       message.error('分享失败，请稍后重试');
     }
   };

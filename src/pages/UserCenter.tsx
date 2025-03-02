@@ -73,7 +73,7 @@ const UserCenter: React.FC = () => {
               };
             }
           } catch (err) {
-            console.error('获取会员信息失败', err);
+            message.error('获取会员信息失败', err);
           }
           
           setUserInfo({
@@ -86,7 +86,7 @@ const UserCenter: React.FC = () => {
           });
         }
       } catch (error) {
-        console.error('解析用户信息失败', error);
+        message.error('解析用户信息失败', error);
       } finally {
         setLoading(false);
       }
@@ -99,7 +99,7 @@ const UserCenter: React.FC = () => {
     try {
       await authApi.logout();
     } catch (error) {
-      console.error('登出失败:', error);
+      message.error('登出失败:', error);
     }
     
     // 无论API是否成功，都清除本地存储并跳转

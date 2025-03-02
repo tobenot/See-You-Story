@@ -53,7 +53,7 @@ const CharacterExtraction: React.FC = () => {
           setIsSubscribed(userLimits.isSubscribed);
           setMaxRefreshCount(userLimits.characterRefreshLimit || 3);
         } catch (apiError) {
-          console.warn('API调用失败，使用模拟数据:', apiError);
+          message.warn('API调用失败，使用模拟数据:', apiError);
           // 使用模拟数据
           characterData = {
             characters: [
@@ -82,7 +82,7 @@ const CharacterExtraction: React.FC = () => {
         setCharacters(characterData.characters);
         setLoading(false);
       } catch (error) {
-        console.error('获取角色失败:', error);
+        message.error('获取角色失败:', error);
         message.error('获取角色失败，请稍后重试');
         setLoading(false);
       }
@@ -111,7 +111,7 @@ const CharacterExtraction: React.FC = () => {
       }
       message.success('角色刷新成功');
     } catch (error) {
-      console.error('刷新角色失败:', error);
+      message.error('刷新角色失败:', error);
       message.error('刷新角色失败，请稍后重试');
     } finally {
       setRefreshing(false);
@@ -140,7 +140,7 @@ const CharacterExtraction: React.FC = () => {
       message.success('角色保存成功');
       navigate('/profile');
     } catch (error) {
-      console.error('保存角色失败:', error);
+      message.error('保存角色失败:', error);
       message.error('保存角色失败，请稍后重试');
     }
   };
