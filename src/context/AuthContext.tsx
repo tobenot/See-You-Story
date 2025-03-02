@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
 import { User } from '../types';
 import { authService } from '../api/services';
 
@@ -19,6 +19,9 @@ export const AuthContext = createContext<AuthContextType>({
   register: async () => {},
   logout: () => {},
 });
+
+// 添加useAuth钩子
+export const useAuth = () => useContext(AuthContext);
 
 interface AuthProviderProps {
   children: ReactNode;

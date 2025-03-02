@@ -11,6 +11,11 @@ import StoryDetailPage from './pages/StoryDetailPage';
 import SubscriptionPage from './pages/SubscriptionPage';
 import { AuthProvider } from './context/AuthContext';
 import { StoryProvider } from './context/StoryContext';
+import QuestionsPage from './pages/QuestionsPage';
+import StoryGenerationPage from './pages/StoryGenerationPage';
+import StoryInteractionPage from './pages/StoryInteractionPage';
+import AnalysisCardPage from './pages/AnalysisCardPage';
+import WorldViewPage from './pages/WorldViewPage';
 
 const { Content } = Layout;
 
@@ -29,6 +34,12 @@ const App: React.FC = () => {
                 <Route path="/stories" element={<StoriesPage />} />
                 <Route path="/story/:id" element={<StoryDetailPage />} />
                 <Route path="/subscription" element={<SubscriptionPage />} />
+                <Route path="/questions" element={<QuestionsPage />} />
+                <Route path="/story-generation" element={<StoryGenerationPage />} />
+                <Route path="/story-interaction/:id" element={<StoryInteractionPage />} />
+                <Route path="/analysis-card/:storyId" element={<AnalysisCardPage />} />
+                <Route path="/world-view" element={<WorldViewPage />} />
+                <Route path="/character-dialog/:characterId" element={<WorldViewPage />} />
               </Routes>
             </Content>
             <AppFooter />
