@@ -10,7 +10,7 @@ interface LoginFormValues {
 
 interface LoginResponse {
   token: string;
-  id: string;
+  id: number;
   username: string;
   message?: string;
 }
