@@ -1,0 +1,30 @@
+name: 检查GitHub Pages配置
+
+on:
+  # 仅在需要时手动运行
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  check-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: 检查Pages配置
+        run: |
+          echo "检查GitHub Pages配置..."
+          echo "如果您看到此消息，说明GitHub Actions工作流已正确设置！"
+          
+      - name: 设置Pages
+        uses: actions/configure-pages@v4
+        
+      - name: 输出Pages信息
+        run: |
+          echo "GitHub Pages URL: ${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          echo "请确保您已在仓库设置中启用了GitHub Pages功能，并选择了GitHub Actions作为部署源。" 

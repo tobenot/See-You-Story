@@ -72,3 +72,17 @@ See You Story是一个基于React+TypeScript开发的AI原生应用
    ```
    npm run dev
    ```
+
+## GitHub Pages部署指南
+
+要启用GitHub Pages自动部署，请按照以下步骤操作：
+
+1. 在GitHub仓库页面，点击"Settings"（设置）
+2. 在左侧导航栏中找到"Pages"选项
+3. 在"Build and deployment"（构建和部署）部分:
+   - Source: 选择"GitHub Actions"
+4. 确保修改package.json中的homepage字段，将`[您的GitHub用户名]`替换为您的实际GitHub用户名
+5. 将代码推送到main分支，GitHub Actions将自动执行部署流程
+6. 部署完成后，您可以通过 https://[您的GitHub用户名].github.io/See-You-Story 访问您的应用
+
+注意：首次部署可能需要几分钟时间才能完成。
