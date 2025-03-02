@@ -86,7 +86,7 @@ const Membership: React.FC = () => {
       setMembershipInfo(membershipResponse.data);
       setRedeemCode(''); // 清空兑换码输入框
     } catch (error) {
-      if ((error as any).response?.data?.error) {
+      if ((error as { response?: { data?: { error: string } } }).response?.data?.error) {
         const apiError = error as { response: { data: { error: string } } };
         message.error(`兑换失败: ${apiError.response.data.error}`);
       } else if (error instanceof Error) {
