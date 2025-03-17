@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, List, Spin, Empty, message } from 'antd';
-import { BookOutlined, RightOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { Button, Card, List, Spin, Empty, message, Tooltip } from 'antd';
+import { BookOutlined, RightOutlined, ClockCircleOutlined, StarOutlined, StarFilled } from '@ant-design/icons';
 import Layout from '../components/Layout';
 import * as storyApi from '../api/story';
 import { StoryWithProgress, StoriesResponse } from '../api/story';
@@ -13,6 +13,7 @@ const ContinueJourney: React.FC = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [total, setTotal] = useState(0);
+  const [favoriteLoading, setFavoriteLoading] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetchStories();
@@ -46,6 +47,32 @@ const ContinueJourney: React.FC = () => {
 
   const handleGoHome = () => {
     navigate('/');
+  };
+
+  const handleToggleFavorite = async (story: StoryWithProgress) => {
+    try {
+      setFavoriteLoading(prev => ({ ...prev, [story.id]: true }));
+      
+      if (story.isFavorite) {
+        await storyApi.unfavoriteStory(story.id);
+        message.success('已取消收藏');
+      } else {
+        await storyApi.favoriteStory(story.id);
+        message.success('收藏成功');
+      }
+      
+      // 更新本地状态
+      setStories(prevStories => 
+        prevStories.map(s => 
+          s.id === story.id ? { ...s, isFavorite: !s.isFavorite } : s
+        )
+      );
+    } catch (error) {
+      console.error('收藏操作失败:', error);
+      message.error('操作失败，请稍后重试');
+    } finally {
+      setFavoriteLoading(prev => ({ ...prev, [story.id]: false }));
+    }
   };
 
   return (
@@ -93,14 +120,26 @@ const ContinueJourney: React.FC = () => {
                       <span>最后章节: {item.lastCreatedChapter.title}</span>
                     </div>
                   </div>
-                  <div className="md:ml-6 mt-4 md:mt-0 flex md:flex-col justify-center items-center">
+                  <div className="md:ml-6 mt-4 md:mt-0 flex md:flex-col justify-center items-center space-y-2">
                     <Button
                       type="primary"
                       icon={<RightOutlined />}
                       onClick={() => handleContinueStory(item)}
+                      className="mb-2 w-full"
                     >
                       继续旅程
                     </Button>
+                    <Tooltip title={item.isFavorite ? "取消收藏" : "收藏故事"}>
+                      <Button 
+                        type={item.isFavorite ? "default" : "dashed"}
+                        icon={item.isFavorite ? <StarFilled className="text-yellow-500" /> : <StarOutlined />}
+                        onClick={() => handleToggleFavorite(item)}
+                        loading={favoriteLoading[item.id]}
+                        className="w-full"
+                      >
+                        {item.isFavorite ? "已收藏" : "收藏"}
+                      </Button>
+                    </Tooltip>
                   </div>
                 </div>
               </Card>

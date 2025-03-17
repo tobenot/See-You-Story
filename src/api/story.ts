@@ -50,6 +50,24 @@ export const unlikeStory = (storyId: string) => {
 };
 
 /**
+ * 收藏故事接口
+ * @param {string} storyId - 故事ID
+ * @returns {Promise} - 返回Promise对象
+ */
+export const favoriteStory = (storyId: string) => {
+  return axios.post(`/story/${storyId}/favorite`);
+};
+
+/**
+ * 取消收藏故事接口
+ * @param {string} storyId - 故事ID
+ * @returns {Promise} - 返回Promise对象
+ */
+export const unfavoriteStory = (storyId: string) => {
+  return axios.delete(`/story/${storyId}/favorite`);
+};
+
+/**
  * 获取用户所有故事接口
  * @returns {Promise} - 返回Promise对象
  */
@@ -68,6 +86,17 @@ export const getUserStoriesWithProgress = (params: { page?: number; limit?: numb
   return axios.get('/story', { params });
 };
 
+/**
+ * 获取用户收藏的故事列表
+ * @param {object} params - 分页参数
+ * @param {number} params.page - 页码
+ * @param {number} params.limit - 每页条数
+ * @returns {Promise} - 返回Promise对象
+ */
+export const getUserFavoriteStories = (params: { page?: number; limit?: number } = {}) => {
+  return axios.get('/story/favorites', { params });
+};
+
 // 接口类型定义
 export interface StoryWithProgress {
   id: string;
@@ -78,6 +107,7 @@ export interface StoryWithProgress {
     number: number;
     title: string;
   };
+  isFavorite?: boolean; // 是否已收藏
   [key: string]: any;
 }
 
