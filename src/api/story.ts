@@ -108,7 +108,7 @@ export interface StoryWithProgress {
     title: string;
   };
   isFavorite?: boolean; // 是否已收藏
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface StoriesResponse {

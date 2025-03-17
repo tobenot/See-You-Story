@@ -52,7 +52,7 @@ const StoryAnalysis: React.FC = () => {
   };
 
   // 备用接口：通过故事ID获取分析卡片
-  const fetchAnalysisByStoryId = async (storyId: string) => {
+  const _fetchAnalysisByStoryId = async (storyId: string) => {
     // 提取数字ID
     const numericId = storyId.replace('story-', '');
     

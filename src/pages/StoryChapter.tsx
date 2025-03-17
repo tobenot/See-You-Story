@@ -7,7 +7,7 @@ import * as storyApi from '../api/story';
 import Layout from '../components/Layout';
 
 // 使用API中定义的接口
-import { StoryChapter as StoryChapterType } from '../api/story';
+import { StoryChapter as _StoryChapterType } from '../api/story';
 
 const StoryChapter: React.FC = () => {
   const location = useLocation();

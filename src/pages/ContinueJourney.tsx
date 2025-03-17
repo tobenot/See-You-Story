@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, List, Spin, Empty, message, Tooltip } from 'antd';
 import { BookOutlined, RightOutlined, ClockCircleOutlined, StarOutlined, StarFilled } from '@ant-design/icons';
@@ -15,11 +15,7 @@ const ContinueJourney: React.FC = () => {
   const [total, setTotal] = useState(0);
   const [favoriteLoading, setFavoriteLoading] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    fetchStories();
-  }, [page]);
-
-  const fetchStories = async () => {
+  const fetchStories = useCallback(async () => {
     try {
       setLoading(true);
       const response = await storyApi.getUserStoriesWithProgress({ page, limit });
@@ -33,7 +29,11 @@ const ContinueJourney: React.FC = () => {
       message.error('获取故事列表失败，请稍后重试');
       setLoading(false);
     }
-  };
+  }, [page, limit]);
+
+  useEffect(() => {
+    fetchStories();
+  }, [fetchStories]);
 
   const handleContinueStory = (story: StoryWithProgress) => {
     // 导航到故事章节页面，开始从上次的章节继续
