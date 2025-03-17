@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 
@@ -25,6 +25,12 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const [customAnswer, setCustomAnswer] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [useCustomAnswer, setUseCustomAnswer] = useState(false);
+
+  useEffect(() => {
+    setSelectedOption(null);
+    setCustomAnswer('');
+    setUseCustomAnswer(false);
+  }, [questionNumber]);
 
   const handleOptionSelect = (value: string) => {
     setSelectedOption(value);
@@ -139,7 +145,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           type="primary"
           size="large"
           className="px-6"
-          disabled={(!selectedOption && !customAnswer.trim()) || (!useCustomAnswer && !selectedOption)}
+          disabled={!((useCustomAnswer && customAnswer.trim()) || (!useCustomAnswer && selectedOption))}
           onClick={handleSubmit}
         >
           下一题

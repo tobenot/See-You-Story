@@ -13,6 +13,13 @@ interface RegisterResponse {
   message?: string;
 }
 
+interface LoginResponse {
+  token: string;
+  id: number;
+  username: string;
+  message?: string;
+}
+
 const RegisterForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,21 +27,37 @@ const RegisterForm: React.FC = () => {
   const onFinish = async (values: RegisterFormValues) => {
     setLoading(true);
     try {
-      const response = await authApi.register({
+      // 1. 先注册
+      const registerResponse = await authApi.register({
         username: values.username,
         password: values.password
       });
       
-      const data = response.data as RegisterResponse;
-      message.success(data.message || '注册成功！');
+      const registerData = registerResponse.data as RegisterResponse;
+      message.success(registerData.message || '注册成功！');
       
-      // 注册成功后自动跳转到登录页
-      navigate('/auth', { state: { activeTab: 'login' } });
+      // 2. 注册成功后直接登录
+      const loginResponse = await authApi.login({
+        username: values.username,
+        password: values.password
+      });
+      
+      const loginData = loginResponse.data as LoginResponse;
+      
+      // 3. 保存登录信息
+      localStorage.setItem('token', loginData.token);
+      localStorage.setItem('user', JSON.stringify({
+        id: loginData.id,
+        username: loginData.username
+      }));
+      
+      // 4. 跳转到首页
+      navigate('/');
     } catch (error) {
       if (error instanceof Error) {
-        message.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || '注册失败，请稍后重试');
+        message.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || '操作失败，请稍后重试');
       } else {
-        message.error('注册失败，请稍后重试');
+        message.error('操作失败，请稍后重试');
       }
     } finally {
       setLoading(false);

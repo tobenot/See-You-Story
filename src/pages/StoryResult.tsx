@@ -236,7 +236,7 @@ const StoryResult: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <Spin size="large" />
-        <p className="mt-4 text-gray-600">正在创作您的专属故事...</p>
+        <p className="mt-4 text-gray-600">正在创作您的专属故事...（过程可能需要三分钟）</p>
       </div>
     );
   }
