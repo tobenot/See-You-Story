@@ -10,11 +10,6 @@ import CharacterExtraction from './pages/CharacterExtraction';
 import Membership from './pages/Membership';
 import UserCenter from './pages/UserCenter';
 
-// 获取基础路径
-const getBasePath = () => {
-  return '/See-You-Story';
-};
-
 // 验证是否已登录
 const isAuthenticated = () => {
   return localStorage.getItem('token') !== null;
@@ -24,7 +19,7 @@ const isAuthenticated = () => {
 const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
   const location = useLocation();
   if (!isAuthenticated()) {
-    return <Navigate to={`${getBasePath()}/auth`} state={{ from: location }} replace />;
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
   return element;
 };
@@ -32,44 +27,44 @@ const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) 
 // 路由配置
 const routes: RouteObject[] = [
   {
-    path: `${getBasePath()}`,
+    path: '/',
     element: <ProtectedRoute element={<Home />} />,
   },
   {
-    path: `${getBasePath()}/auth`,
+    path: '/auth',
     element: <Auth />,
   },
   {
-    path: `${getBasePath()}/story-journey`,
+    path: '/story-journey',
     element: <ProtectedRoute element={<StoryJourney />} />,
   },
   {
-    path: `${getBasePath()}/story-result`,
+    path: '/story-result',
     element: <ProtectedRoute element={<StoryResult />} />,
   },
   {
-    path: `${getBasePath()}/story-chapter`,
+    path: '/story-chapter',
     element: <ProtectedRoute element={<StoryChapter />} />,
   },
   {
-    path: `${getBasePath()}/story-analysis`,
+    path: '/story-analysis',
     element: <ProtectedRoute element={<StoryAnalysis />} />,
   },
   {
-    path: `${getBasePath()}/character-extraction`,
+    path: '/character-extraction',
     element: <ProtectedRoute element={<CharacterExtraction />} />,
   },
   {
-    path: `${getBasePath()}/membership`,
+    path: '/membership',
     element: <ProtectedRoute element={<Membership />} />,
   },
   {
-    path: `${getBasePath()}/user-center`,
+    path: '/user-center',
     element: <ProtectedRoute element={<UserCenter />} />,
   },
   {
     path: '*',
-    element: <Navigate to={`${getBasePath()}/auth`} replace />,
+    element: <Navigate to="/auth" replace />,
   },
 ];
 
