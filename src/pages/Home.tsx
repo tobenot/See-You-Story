@@ -32,6 +32,10 @@ const Home: React.FC = () => {
     navigate('/story-journey');
   };
 
+  const handleContinueJourney = () => {
+    navigate('/continue-journey');
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleLogout = async () => {
     try {
@@ -70,7 +74,11 @@ const Home: React.FC = () => {
             </Card>
           </Col>
           <Col xs={24} md={8}>
-            <Card hoverable className="h-full">
+            <Card 
+              hoverable 
+              className="h-full" 
+              onClick={handleContinueJourney}
+            >
               <div className="text-center">
                 <BookOutlined style={{ fontSize: '48px', color: '#52c41a' }} className="mb-4" />
                 <h3 className="text-xl font-bold mb-2">继续旅程</h3>

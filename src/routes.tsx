@@ -9,6 +9,7 @@ import StoryAnalysis from './pages/StoryAnalysis';
 import CharacterExtraction from './pages/CharacterExtraction';
 import Membership from './pages/Membership';
 import UserCenter from './pages/UserCenter';
+import ContinueJourney from './pages/ContinueJourney';
 
 // 验证是否已登录
 const isAuthenticated = () => {
@@ -61,6 +62,10 @@ const routes: RouteObject[] = [
   {
     path: '/user-center',
     element: <ProtectedRoute element={<UserCenter />} />,
+  },
+  {
+    path: '/continue-journey',
+    element: <ProtectedRoute element={<ContinueJourney />} />,
   },
   {
     path: '*',

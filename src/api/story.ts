@@ -58,6 +58,37 @@ export const getUserStories = () => {
 };
 
 /**
+ * 获取用户故事列表（含创作进度）
+ * @param {object} params - 分页参数
+ * @param {number} params.page - 页码
+ * @param {number} params.limit - 每页条数
+ * @returns {Promise} - 返回Promise对象
+ */
+export const getUserStoriesWithProgress = (params: { page?: number; limit?: number } = {}) => {
+  return axios.get('/story', { params });
+};
+
+// 接口类型定义
+export interface StoryWithProgress {
+  id: string;
+  title: string;
+  content: string;
+  lastCreatedChapter: {
+    id: string;
+    number: number;
+    title: string;
+  };
+  [key: string]: any;
+}
+
+export interface StoriesResponse {
+  stories: StoryWithProgress[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+/**
  * 获取故事详情接口
  * @param {string} storyId - 故事ID
  * @returns {Promise} - 返回Promise对象
