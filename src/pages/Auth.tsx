@@ -3,6 +3,7 @@ import { BookOutlined } from '@ant-design/icons';
 import LoginForm from '../components/auth/LoginForm';
 import RegisterForm from '../components/auth/RegisterForm';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { openFeedback } from '../utils/feedback';
 
 const Auth: React.FC = () => {
   const location = useLocation();
@@ -29,7 +30,7 @@ const Auth: React.FC = () => {
   };
 
   const handleFeedback = () => {
-    window.open('https://github.com/your-repo/issues', '_blank');
+    openFeedback();
   };
 
   return (

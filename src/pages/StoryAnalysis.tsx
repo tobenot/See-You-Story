@@ -6,6 +6,7 @@ import AnalysisCard from '../components/story/AnalysisCard';
 import WorldViewCard from '../components/story/WorldViewCard';
 import * as storyApi from '../api/story';
 import Layout from '../components/Layout';
+import { openFeedback } from '../utils/feedback';
 
 interface AnalysisCardData {
   id: string;
@@ -88,7 +89,7 @@ const StoryAnalysis: React.FC = () => {
   };
 
   const handleFeedback = () => {
-    message.info('反馈功能即将上线');
+    openFeedback();
   };
 
   const handleShare = (_cardId: string) => {

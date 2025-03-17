@@ -4,6 +4,7 @@ import { Button, Spin, message, Card, Avatar, Modal } from 'antd';
 import { UserOutlined, SyncOutlined, CrownOutlined, BookOutlined } from '@ant-design/icons';
 import * as storyApi from '../api/story';
 import Layout from '../components/Layout';
+import { openFeedback } from '../utils/feedback';
 
 interface Character {
   id: string;
@@ -131,7 +132,7 @@ const CharacterExtraction: React.FC = () => {
   };
 
   const handleFeedback = () => {
-    message.info('反馈功能即将上线');
+    openFeedback();
   };
 
   const handleSaveCharacters = async () => {
