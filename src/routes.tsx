@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject, useLocation } from 'react-router-dom';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import StoryResult from './pages/StoryResult';
@@ -10,6 +10,11 @@ import CharacterExtraction from './pages/CharacterExtraction';
 import Membership from './pages/Membership';
 import UserCenter from './pages/UserCenter';
 
+// 获取基础路径
+const getBasePath = () => {
+  return '/See-You-Story';
+};
+
 // 验证是否已登录
 const isAuthenticated = () => {
   return localStorage.getItem('token') !== null;
@@ -17,8 +22,9 @@ const isAuthenticated = () => {
 
 // 需要登录的路由
 const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
+  const location = useLocation();
   if (!isAuthenticated()) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to={`${getBasePath()}/auth`} state={{ from: location }} replace />;
   }
   return element;
 };
@@ -63,7 +69,7 @@ const routes: RouteObject[] = [
   },
   {
     path: '*',
-    element: <Navigate to="/auth" replace />,
+    element: <Navigate to={`${getBasePath()}/auth`} replace />,
   },
 ];
 
