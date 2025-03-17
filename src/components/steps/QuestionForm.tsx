@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
 
@@ -25,11 +25,15 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   const [customAnswer, setCustomAnswer] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [useCustomAnswer, setUseCustomAnswer] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submittedRef = useRef(false);
 
   useEffect(() => {
     setSelectedOption(null);
     setCustomAnswer('');
     setUseCustomAnswer(false);
+    setIsSubmitting(false);
+    submittedRef.current = false;
   }, [questionNumber]);
 
   const handleOptionSelect = (value: string) => {
@@ -55,6 +59,14 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
   };
 
   const handleSubmit = () => {
+    // 防止重复提交
+    if (isSubmitting || submittedRef.current) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    submittedRef.current = true;
+    
     if (useCustomAnswer && customAnswer.trim()) {
       onSubmit(customAnswer.trim());
     } else if (selectedOption) {
@@ -67,6 +79,8 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
     setSelectedOption(null);
     setCustomAnswer('');
     setUseCustomAnswer(false);
+    setIsSubmitting(false);
+    submittedRef.current = false;
     
     if (onReset) onReset();
     
@@ -145,10 +159,10 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           type="primary"
           size="large"
           className="px-6"
-          disabled={!((useCustomAnswer && customAnswer.trim()) || (!useCustomAnswer && selectedOption))}
+          disabled={!((useCustomAnswer && customAnswer.trim()) || (!useCustomAnswer && selectedOption)) || isSubmitting}
           onClick={handleSubmit}
         >
-          下一题
+          {isSubmitting ? '提交中...' : '下一题'}
         </Button>
       </div>
     </div>

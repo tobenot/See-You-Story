@@ -75,29 +75,46 @@ export const shareStory = (storyId: string) => {
   return axios.post(`/story/${storyId}/share`);
 };
 
+// 接口类型定义
+export interface StoryChapter {
+  id: string;
+  title: string;
+  content: string;
+  options: StoryOption[];
+}
+
+export interface StoryOption {
+  id: string;
+  text: string;
+}
+
+export interface SelectOptionResponse {
+  nextChapterId: string;
+}
+
 /**
  * 选择故事选项接口
  * @param {string} storyId - 故事ID
  * @param {string} chapterId - 章节ID
  * @param {string} optionId - 选项ID
- * @returns {Promise} - 返回Promise对象，包含下一章节内容
+ * @returns {Promise<{ data: SelectOptionResponse }>} - 返回Promise对象，包含下一章节ID
  */
 export const selectStoryOption = (
   storyId: string,
   chapterId: string,
   optionId: string
 ) => {
-  return axios.post(`/story/${storyId}/chapters/${chapterId}/select`, { optionId });
+  return axios.post<SelectOptionResponse>(`/story/${storyId}/chapters/${chapterId}/select`, { optionId });
 };
 
 /**
  * 获取故事章节接口
  * @param {string} storyId - 故事ID
  * @param {string} chapterId - 章节ID
- * @returns {Promise} - 返回Promise对象，包含章节内容
+ * @returns {Promise<{ data: StoryChapter }>} - 返回Promise对象，包含章节内容
  */
 export const getStoryChapter = (storyId: string, chapterId: string) => {
-  return axios.get(`/story/${storyId}/chapters/${chapterId}`);
+  return axios.get<StoryChapter>(`/story/${storyId}/chapters/${chapterId}`);
 };
 
 /**

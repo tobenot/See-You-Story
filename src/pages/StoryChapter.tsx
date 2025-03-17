@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, Spin, message } from 'antd';
-import { RollbackOutlined, BookOutlined } from '@ant-design/icons';
-import StoryChapterOptions from '../components/story/StoryChapterOptions';
+import { Button, Spin, message, Alert } from 'antd';
+import { RollbackOutlined, BookOutlined, RedoOutlined } from '@ant-design/icons';
+import StoryChapterOptions, { StoryOption } from '../components/story/StoryChapterOptions';
 import * as storyApi from '../api/story';
 import Layout from '../components/Layout';
 
-interface StoryOption {
-  id: string;
-  text: string;
-}
+// 使用API中定义的接口
+import { StoryChapter as StoryChapterType } from '../api/story';
 
 const StoryChapter: React.FC = () => {
   const location = useLocation();
@@ -21,6 +19,8 @@ const StoryChapter: React.FC = () => {
   const [chapterTitle, setChapterTitle] = useState('');
   const [chapterContent, setChapterContent] = useState('');
   const [options, setOptions] = useState<StoryOption[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [optionSelecting, setOptionSelecting] = useState(false);
   
   useEffect(() => {
     if (!storyId) {
@@ -32,34 +32,19 @@ const StoryChapter: React.FC = () => {
     const fetchChapter = async () => {
       try {
         setLoading(true);
-        // 调用API获取章节内容
-        let chapterData;
+        setError(null);
         
-        try {
-          const response = await storyApi.getStoryChapter(storyId, chapterId);
-          chapterData = response.data;
-        } catch (apiError) {
-          message.warning('API调用失败，使用模拟数据');
-          // 使用模拟数据
-          chapterData = {
-            id: chapterId,
-            title: '奇幻世界：魔法与科技的融合',
-            content: '在一个魔法与科技共存的世界里，你是一名刚刚觉醒特殊能力的年轻人。今天早晨，你发现自己能够看到他人无法察觉的能量流动。当你走在繁忙的街道上，一位神秘的老者向你走来，他似乎注意到了你的不同...\n\n"年轻人，我看得出你与众不同。这个世界正面临一场危机，而你可能是解决它的关键。"老者神秘地说道。',
-            options: [
-              { id: 'option1', text: '询问老者更多关于危机的信息' },
-              { id: 'option2', text: '礼貌地拒绝，继续自己的路' },
-              { id: 'option3', text: '展示你的能力，询问老者是否知道这意味着什么' }
-            ]
-          };
-        }
+        // 调用API获取章节内容
+        const response = await storyApi.getStoryChapter(storyId, chapterId);
+        const chapterData = response.data;
         
         setChapterTitle(chapterData.title);
         setChapterContent(chapterData.content);
         setOptions(chapterData.options);
         setLoading(false);
       } catch (error) {
-        message.error('获取章节失败');
-        message.error('获取章节失败，请稍后重试');
+        console.error('获取章节失败:', error);
+        setError('获取故事章节失败，请稍后重试');
         setLoading(false);
       }
     };
@@ -69,21 +54,20 @@ const StoryChapter: React.FC = () => {
 
   const handleSelectOption = async (optionId: string) => {
     try {
-      setLoading(true);
+      setOptionSelecting(true);
       
-      let nextChapterId;
+      // 调用API选择选项，获取下一章节
+      const response = await storyApi.selectStoryOption(storyId, chapterId, optionId);
+      const nextChapterId = response.data.nextChapterId;
       
-      try {
-        // 调用API选择选项，获取下一章节
-        const response = await storyApi.selectStoryOption(storyId, chapterId, optionId);
-        nextChapterId = response.data.nextChapterId;
-      } catch (apiError) {
-        message.warning('API调用失败，使用模拟数据');
-        // 模拟API调用，生成下一章节ID
-        nextChapterId = String(parseInt(chapterId, 10) + 1);
-      }
+      setOptionSelecting(false);
       
-      setLoading(false);
+      // 保存当前的章节历史到localStorage，方便用户回溯
+      const historyKey = `story_${storyId}_history`;
+      const currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
+      currentHistory.push({ chapterId, title: chapterTitle, selectedOption: optionId });
+      localStorage.setItem(historyKey, JSON.stringify(currentHistory));
+      
       navigate('/story-chapter', { 
         state: { 
           storyId, 
@@ -91,8 +75,9 @@ const StoryChapter: React.FC = () => {
         } 
       });
     } catch (error) {
-      message.error('选择失败，请稍后重试');
-      setLoading(false);
+      console.error('选择选项失败:', error);
+      message.error('选择选项失败，请稍后重试');
+      setOptionSelecting(false);
     }
   };
 
@@ -103,12 +88,57 @@ const StoryChapter: React.FC = () => {
   const handleEndStory = () => {
     navigate('/story-analysis', { state: { storyId } });
   };
+  
+  const handleRetryFetch = async () => {
+    setError(null);
+    const fetchChapter = async () => {
+      try {
+        setLoading(true);
+        const response = await storyApi.getStoryChapter(storyId, chapterId);
+        const chapterData = response.data;
+        
+        setChapterTitle(chapterData.title);
+        setChapterContent(chapterData.content);
+        setOptions(chapterData.options);
+        setLoading(false);
+      } catch (error) {
+        console.error('重试获取章节失败:', error);
+        setError('获取故事章节失败，请稍后重试');
+        setLoading(false);
+      }
+    };
+    
+    fetchChapter();
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <Spin size="large" />
         <p className="mt-4 text-gray-600">正在加载故事章节...</p>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="text-center max-w-md w-full">
+          <Alert
+            message="加载失败"
+            description={error}
+            type="error"
+            showIcon
+          />
+          <div className="mt-4 flex justify-center space-x-4">
+            <Button type="primary" icon={<RedoOutlined />} onClick={handleRetryFetch}>
+              重试
+            </Button>
+            <Button onClick={handleReturn}>
+              返回
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -138,7 +168,8 @@ const StoryChapter: React.FC = () => {
           
           <StoryChapterOptions 
             options={options} 
-            onSelectOption={handleSelectOption} 
+            onSelectOption={handleSelectOption}
+            loading={optionSelecting}
           />
         </div>
       </div>
