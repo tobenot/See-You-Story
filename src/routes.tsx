@@ -32,39 +32,39 @@ const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) 
 // 路由配置
 const routes: RouteObject[] = [
   {
-    path: '/',
+    path: `${getBasePath()}`,
     element: <ProtectedRoute element={<Home />} />,
   },
   {
-    path: '/auth',
+    path: `${getBasePath()}/auth`,
     element: <Auth />,
   },
   {
-    path: '/story-journey',
+    path: `${getBasePath()}/story-journey`,
     element: <ProtectedRoute element={<StoryJourney />} />,
   },
   {
-    path: '/story-result',
+    path: `${getBasePath()}/story-result`,
     element: <ProtectedRoute element={<StoryResult />} />,
   },
   {
-    path: '/story-chapter',
+    path: `${getBasePath()}/story-chapter`,
     element: <ProtectedRoute element={<StoryChapter />} />,
   },
   {
-    path: '/story-analysis',
+    path: `${getBasePath()}/story-analysis`,
     element: <ProtectedRoute element={<StoryAnalysis />} />,
   },
   {
-    path: '/character-extraction',
+    path: `${getBasePath()}/character-extraction`,
     element: <ProtectedRoute element={<CharacterExtraction />} />,
   },
   {
-    path: '/membership',
+    path: `${getBasePath()}/membership`,
     element: <ProtectedRoute element={<Membership />} />,
   },
   {
-    path: '/user-center',
+    path: `${getBasePath()}/user-center`,
     element: <ProtectedRoute element={<UserCenter />} />,
   },
   {
