@@ -6,6 +6,7 @@ import AnalysisCard from '../components/story/AnalysisCard';
 import WorldViewCard from '../components/story/WorldViewCard';
 import Layout from '../components/Layout';
 import { openFeedback } from '../utils/feedback';
+import { getStoryAnalysis, saveAnalysisCard, deleteAnalysisCard } from '../api/story';
 
 interface AnalysisCardData {
   id: string;
@@ -42,20 +43,8 @@ const StoryAnalysis: React.FC = () => {
   // 获取故事分析
   const fetchStoryAnalysis = async (storyId: string) => {
     try {
-      const response = await fetch(`/api/v1/story/${storyId}/analysis`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${getToken()}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('获取分析失败');
-      }
-      
-      const data = await response.json();
-      return data;
+      const response = await getStoryAnalysis(storyId);
+      return response.data;
     } catch (error) {
       console.error('分析获取错误:', error);
       throw error;
@@ -97,21 +86,10 @@ const StoryAnalysis: React.FC = () => {
   };
 
   // 保存分析卡片
-  const saveAnalysisCard = async (cardId: string) => {
+  const handleSaveAnalysisCard = async (cardId: string) => {
     try {
-      const response = await fetch(`/api/v1/analysis-cards/${cardId}/save`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${getToken()}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('保存失败');
-      }
-      
-      return await response.json();
+      const response = await saveAnalysisCard(cardId);
+      return response.data;
     } catch (error) {
       console.error('保存卡片错误:', error);
       throw error;
@@ -119,21 +97,10 @@ const StoryAnalysis: React.FC = () => {
   };
 
   // 删除分析卡片
-  const deleteAnalysisCard = async (cardId: string) => {
+  const handleDeleteAnalysisCard = async (cardId: string) => {
     try {
-      const response = await fetch(`/api/v1/analysis-cards/${cardId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${getToken()}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('删除失败');
-      }
-      
-      return await response.json();
+      const response = await deleteAnalysisCard(cardId);
+      return response.data;
     } catch (error) {
       console.error('删除卡片错误:', error);
       throw error;
@@ -151,40 +118,34 @@ const StoryAnalysis: React.FC = () => {
       try {
         setLoading(true);
         
-        let analysisData;
-        
         try {
-          // 调用主API获取分析数据
-          analysisData = await fetchStoryAnalysis(storyId);
-        } catch (primaryApiError) {
-          message.warning('主API调用失败，尝试备用接口');
-          try {
-            // 尝试备用接口
-            analysisData = await fetchAnalysisByStoryId(storyId);
-          } catch (backupApiError) {
-            message.warning('API调用失败，使用模拟数据');
-            // 使用模拟数据
-            analysisData = {
-              analysisCard: {
-                id: 'analysis-card-mock',
-                title: '作者心理解析',
-                type: 'psychological_analysis',
-                content: '根据你的故事选择，我们分析出你倾向于勇敢面对挑战，同时也重视与他人的合作。你的决策展现出了领导才能和对未知的好奇心。',
-                tags: ['勇敢', '合作', '好奇', '领导力']
-              },
-              worldViewCard: {
-                id: 'world-view-card-mock',
-                title: '世界观',
-                type: 'world-view',
-                content: '你的故事发生在一个魔法与科技共存的世界，这里的人们利用古老的魔法知识与现代科技创造出独特的文明。能量流动在这个世界中扮演着重要角色，只有少数人能够感知它。',
-                tags: ['魔法', '科技', '能量', '神秘']
-              }
-            };
-          }
+          // 调用API获取分析数据
+          const analysisData = await fetchStoryAnalysis(storyId);
+          setAnalysisCard(analysisData.analysisCard);
+          setWorldViewCard(analysisData.worldViewCard);
+        } catch (error) {
+          message.warning('API调用失败，使用模拟数据');
+          // 使用模拟数据
+          const mockData = {
+            analysisCard: {
+              id: 'analysis-card-mock',
+              title: '作者心理解析',
+              type: 'psychological_analysis',
+              content: '根据你的故事选择，我们分析出你倾向于勇敢面对挑战，同时也重视与他人的合作。你的决策展现出了领导才能和对未知的好奇心。',
+              tags: ['勇敢', '合作', '好奇', '领导力']
+            },
+            worldViewCard: {
+              id: 'world-view-card-mock',
+              title: '世界观',
+              type: 'world-view',
+              content: '你的故事发生在一个魔法与科技共存的世界，这里的人们利用古老的魔法知识与现代科技创造出独特的文明。能量流动在这个世界中扮演着重要角色，只有少数人能够感知它。',
+              tags: ['魔法', '科技', '能量', '神秘']
+            }
+          };
+          setAnalysisCard(mockData.analysisCard);
+          setWorldViewCard(mockData.worldViewCard);
         }
         
-        setAnalysisCard(analysisData.analysisCard);
-        setWorldViewCard(analysisData.worldViewCard);
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -215,7 +176,7 @@ const StoryAnalysis: React.FC = () => {
 
   const handleSave = async (cardId: string) => {
     try {
-      await saveAnalysisCard(cardId);
+      await handleSaveAnalysisCard(cardId);
       message.success('卡片已保存');
     } catch (error) {
       console.error(error);
@@ -234,7 +195,7 @@ const StoryAnalysis: React.FC = () => {
       cancelText: '取消',
       onOk: async () => {
         try {
-          await deleteAnalysisCard(selectedCard);
+          await handleDeleteAnalysisCard(selectedCard);
           message.success('卡片已删除');
           // 根据删除的卡片类型，清除相应的状态
           if (analysisCard?.id === selectedCard) {
@@ -258,7 +219,7 @@ const StoryAnalysis: React.FC = () => {
     }
     
     try {
-      await saveAnalysisCard(selectedCard);
+      await handleSaveAnalysisCard(selectedCard);
       message.success('卡片已收藏');
       
       // 导航到角色提取页面
