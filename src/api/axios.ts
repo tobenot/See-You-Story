@@ -40,7 +40,7 @@ instance.interceptors.response.use(
       if (error.response.status === 401) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = '/auth';
+        window.location.href = '/#/auth';
       }
       
       // 处理429错误（请求频率超限或账号锁定）
