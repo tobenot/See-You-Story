@@ -14,8 +14,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🔍", "label": "记录每朵拉花的预言验证", "value": "微观宿命论者" },
       { "icon": "🎨", "label": "开咖啡占卜网红店", "value": "日常魔法的传播者" },
-      { "icon": "🚫", "label": "改用纯黑咖啡逃避预言", "value": "自由意志捍卫者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚫", "label": "改用纯黑咖啡逃避预言", "value": "自由意志捍卫者" }
     ],
     "type": "options"
   },
@@ -25,8 +24,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🌸", "label": "春日——万物加速繁殖", "value": "生命狂欢的代价" },
       { "icon": "🌞", "label": "夏日——生物荧光化", "value": "永昼生态革命" },
-      { "icon": "🍂", "label": "秋日——树木金属化落叶", "value": "机械自然主义" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🍂", "label": "秋日——树木金属化落叶", "value": "机械自然主义" }
     ],
     "type": "options"
   },
@@ -36,8 +34,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "💡", "label": "要求每天三小时古典乐", "value": "绿植美学主义" },
       { "icon": "👥", "label": "想和对面楼的仙人掌交友", "value": "跨物种社交实验" },
-      { "icon": "🚀", "label": "申请去太空站净化空气", "value": "植物航天计划" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚀", "label": "申请去太空站净化空气", "value": "植物航天计划" }
     ],
     "type": "options"
   },
@@ -47,8 +44,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "👶", "label": "撰写《婴儿宇宙观》论文", "value": "原始认知考古" },
       { "icon": "🎤", "label": "组建跨龄合唱团", "value": "声波代际桥接" },
-      { "icon": "🤐", "label": "假装从未获得这个能力", "value": "知识禁果的拒绝" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🤐", "label": "假装从未获得这个能力", "value": "知识禁果的拒绝" }
     ],
     "type": "options"
   },
@@ -58,8 +54,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🏠", "label": "把整栋楼改造成游戏场", "value": "赛博游乐场主" },
       { "icon": "📚", "label": "教它编写善意病毒代码", "value": "AI育儿专家" },
-      { "icon": "🕶️", "label": "假装找不到让它开心", "value": "数字宠溺主义" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🕶️", "label": "假装找不到让它开心", "value": "数字宠溺主义" }
     ],
     "type": "options"
   },
@@ -69,8 +64,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🧥", "label": "开解忧裁缝铺", "value": "记忆纺织师" },
       { "icon": "🎭", "label": "制作沉浸式话剧服装", "value": "时空织物艺术" },
-      { "icon": "🧵", "label": "将祖辈大衣编成家族史", "value": "流动的记忆图腾" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🧵", "label": "将祖辈大衣编成家族史", "value": "流动的记忆图腾" }
     ],
     "type": "options"
   },
@@ -80,8 +74,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "📖", "label": "《小王子》请狐狸喝下午茶", "value": "存在主义茶话会" },
       { "icon": "🔬", "label": "《物种起源》与达尔文辩论", "value": "学术追星革命" },
-      { "icon": "🍄", "label": "《爱丽丝漫游奇境》组疯帽子派对", "value": "荒诞现实主义者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🍄", "label": "《爱丽丝漫游奇境》组疯帽子派对", "value": "荒诞现实主义者" }
     ],
     "type": "options"
   },
@@ -91,8 +84,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🛋️", "label": "会自主移动的懒人沙发", "value": "流动舒适革命" },
       { "icon": "🖼️", "label": "能变换风景的电子相框", "value": "赛博窗景计划" },
-      { "icon": "🧦", "label": "自动配对的袜子精灵", "value": "家政和平使者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🧦", "label": "自动配对的袜子精灵", "value": "家政和平使者" }
     ],
     "type": "options"
   },
@@ -100,10 +92,9 @@ export const allQuestions: Question[] = [
     "id": "question-9",
     "text": "当你发现超市试吃品能短暂共享他人的味觉记忆，你会？",
     "options": [
-      { "icon": "🍣", "label": "策划"环球味觉之旅"试吃会", "value": "感官旅行社" },
+      { "icon": "🍣", "label": "策划\"环球味觉之旅\"试吃会", "value": "感官旅行社" },
       { "icon": "👵", "label": "寻找奶奶味道的苹果派", "value": "味觉人类学" },
-      { "icon": "🚫", "label": "从此自带午餐避免接触", "value": "隐私洁癖者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚫", "label": "从此自带午餐避免接触", "value": "隐私洁癖者" }
     ],
     "type": "options"
   },
@@ -113,8 +104,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🐾", "label": "建立心灵匹配收容所", "value": "跨物种红娘" },
       { "icon": "📊", "label": "用大数据优化配对算法", "value": "赛博月老" },
-      { "icon": "🌌", "label": "在无梦状态下创作小说", "value": "清醒幻想家" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🌌", "label": "在无梦状态下创作小说", "value": "清醒幻想家" }
     ],
     "type": "options"
   },
@@ -124,8 +114,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🚇", "label": "组织平行时空一日游", "value": "跨维度旅行社" },
       { "icon": "📚", "label": "收集不同时空的畅销书", "value": "文学多元宇宙" },
-      { "icon": "🚫", "label": "贴警示标语阻止他人尝试", "value": "时空安全员" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚫", "label": "贴警示标语阻止他人尝试", "value": "时空安全员" }
     ],
     "type": "options"
   },
@@ -135,8 +124,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🌈", "label": "彩虹——让城市永远绚丽", "value": "色彩乌托邦" },
       { "icon": "🍃", "label": "微风——让空气永远清新", "value": "自然净化计划" },
-      { "icon": "🌌", "label": "极光——让夜空永远梦幻", "value": "星空守护者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🌌", "label": "极光——让夜空永远梦幻", "value": "星空守护者" }
     ],
     "type": "options"
   },
@@ -146,8 +134,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "📲", "label": "开发未来信息预测App", "value": "时间数据商人" },
       { "icon": "🔋", "label": "囤积充电宝以备不时之需", "value": "能量守财奴" },
-      { "icon": "🚫", "label": "关闭手机避免干扰未来", "value": "时空伦理卫士" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚫", "label": "关闭手机避免干扰未来", "value": "时空伦理卫士" }
     ],
     "type": "options"
   },
@@ -157,8 +144,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🍋", "label": "柠檬——让酸味成为传说", "value": "味觉考古学家" },
       { "icon": "🌶️", "label": "辣椒——让辣味成为历史", "value": "感官革命家" },
-      { "icon": "🍬", "label": "糖果——让甜味成为记忆", "value": "健康守护者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🍬", "label": "糖果——让甜味成为记忆", "value": "健康守护者" }
     ],
     "type": "options"
   },
@@ -168,8 +154,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "📚", "label": "举办夜间迷宫探险活动", "value": "知识冒险家" },
       { "icon": "🔍", "label": "研究书本排列的规律", "value": "文学密码学家" },
-      { "icon": "🚫", "label": "锁住图书馆禁止夜间开放", "value": "秩序维护者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚫", "label": "锁住图书馆禁止夜间开放", "value": "秩序维护者" }
     ],
     "type": "options"
   },
@@ -179,8 +164,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🐬", "label": "海豚——海洋守护者", "value": "海洋文明先驱" },
       { "icon": "🐒", "label": "猴子——森林管理者", "value": "丛林智慧革命" },
-      { "icon": "🐦", "label": "鸟类——天空探索者", "value": "云端哲学家" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🐦", "label": "鸟类——天空探索者", "value": "云端哲学家" }
     ],
     "type": "options"
   },
@@ -190,8 +174,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🎥", "label": "开梦境直播频道", "value": "潜意识网红" },
       { "icon": "📖", "label": "将梦境写成小说", "value": "幻想文学作家" },
-      { "icon": "🚫", "label": "戴上眼罩避免做梦", "value": "梦境隐士" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚫", "label": "戴上眼罩避免做梦", "value": "梦境隐士" }
     ],
     "type": "options"
   },
@@ -201,8 +184,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🌊", "label": "海浪声——让海洋归于寂静", "value": "海洋静音计划" },
       { "icon": "🍃", "label": "风声——让空气停止流动", "value": "大气平衡者" },
-      { "icon": "🌧️", "label": "雨声——让天空不再哭泣", "value": "气候调节师" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🌧️", "label": "雨声——让天空不再哭泣", "value": "气候调节师" }
     ],
     "type": "options"
   },
@@ -212,8 +194,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "👥", "label": "让影子代替自己工作", "value": "分身效率大师" },
       { "icon": "🎭", "label": "和影子一起表演双簧", "value": "光影艺术家" },
-      { "icon": "🚫", "label": "永远站在强光下避免分离", "value": "自我统一者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🚫", "label": "永远站在强光下避免分离", "value": "自我统一者" }
     ],
     "type": "options"
   },
@@ -223,8 +204,7 @@ export const allQuestions: Question[] = [
     "options": [
       { "icon": "🔴", "label": "红色——让热情成为历史", "value": "视觉革命家" },
       { "icon": "🔵", "label": "蓝色——让冷静成为传说", "value": "色彩考古学家" },
-      { "icon": "🟢", "label": "绿色——让自然成为记忆", "value": "生态守护者" },
-      { "icon": "✍️", "label": "自行输入", "value": "custom" }
+      { "icon": "🟢", "label": "绿色——让自然成为记忆", "value": "生态守护者" }
     ],
     "type": "options"
   }
